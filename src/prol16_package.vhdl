@@ -92,7 +92,4 @@ package prol16_package is
     constant Cycle_1 : std_ulogic_vector(2 downto 0) := "001";
     constant Cycle_2 : std_ulogic_vector(2 downto 0) := "010";
     constant Cycle_3 : std_ulogic_vector(2 downto 0) := "100";
-
-   
-        
 end package;

@@ -17,7 +17,7 @@ entity ControlPath is
          ---------------------------------- [ ALU ] ------------------------
   
        ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
-       ALUFunc : in std_ulogic_vector(3 downto 0); -- selects the function
+       ALUFunc : out std_ulogic_vector(3 downto 0); -- selects the function
        -- Of the ALU
        ---------------------------------- [ MEM ] ------------------------
        MemAddr : out DataVec; -- address wires of memory

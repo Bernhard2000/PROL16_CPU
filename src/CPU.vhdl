@@ -7,13 +7,7 @@ use work.prol16_package.all;
 
 
 entity CPU is
-    port (MemIOData : inout std_logic_vector(15 downto 0);
-    MemAddr : out DataVec;
-    MemCE : out std_ulogic; -- low-active (Chip Enable)
-    MemWE : out std_ulogic; -- low-active (Write Enable)
-    MemOE : out std_ulogic; -- low-active (Output Enable)
-    LegalOpcodePresent : out std_ulogic;
-    
+    port (
     Reset : in std_ulogic;
     ZuluClk : in std_ulogic);
 end CPU;
@@ -37,6 +31,10 @@ architecture Behavioral of CPU is
     
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
+    signal MemIO, MemAddr : DataVec;
+    signal OutputEnable, ChipEnable : std_ulogic;
+    
+    signal MemRdStrobe, MemWrStrobe : std_ulogic;
     
     component DataPath is
             port (
@@ -62,6 +60,38 @@ architecture Behavioral of CPU is
                 ZuluClk : in std_ulogic -- clock input
             ); 
         end component;
+        
+     component ControlPath is
+     port ( 
+             Reset : in std_ulogic; -- reset inpunt
+             ZuluClk : in std_ulogic; -- clock input
+     
+             MemRdStrobe : out std_ulogic; -- memory read strobe
+             MemWrStrobe : out std_ulogic; -- memory write strobe
+             
+              ---------------------------------- [ ALU ] ------------------------
+       
+            ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
+            ALUFunc : in std_ulogic_vector(3 downto 0); -- selects the function
+            -- Of the ALU
+            ---------------------------------- [ MEM ] ------------------------
+            MemAddr : out DataVec; -- address wires of memory
+            MemWrData : out DataVec; -- data wires for writing the memory
+            MemRdData : in DataVec -- data wires for reading the memory
+         );
+     
+     end component;
+     
+     component memory is
+       generic (
+         file_base_g : string := "main"); -- base name for assember, log and dump file
+       port (
+         mem_addr_i : in    std_ulogic_vector(15 downto 0);      -- address input
+         mem_dat_io : inout std_logic_vector(15 downto 0);       -- data i/o
+         mem_ce_ni  : in    std_ulogic;      -- chip enable (low active)
+         mem_oe_ni  : in    std_ulogic;      -- output enable (low active)
+         mem_we_ni  : in    std_ulogic);     -- write enable (low active)    
+     end component;
 
 begin
 --TODO implementation
@@ -88,4 +118,30 @@ begin
         Reset => Reset, -- reset inpunt
         ZuluClk => ZuluClk -- clock input
     );
+    
+    controlPath_instance : ControlPath
+    port map (
+        Reset => Reset,
+        ZuluClk => ZuluClk,    
+        MemRdStrobe => MemRdStrobe,
+        MemWrStrobe => MemWrStrobe,
+        ZeroOut => ALU_ZeroOut,
+        ALUFunc => AlUFunc,            
+        MemAddr => MemAddr,
+        MemWrData => MemWrData,
+        MemRdData => MemRdData
+    );
+    
+    memory_instance : memory
+    port map (
+        mem_addr_i => MemAddr,
+        mem_dat_io => MemIO,
+        mem_ce_ni => ChipEnable,
+        mem_oe_ni => OutputEnable,
+        mem_we_ni => MemWrStrobe
+     
+    );
+    
+    
+    
 end Behavioral;
