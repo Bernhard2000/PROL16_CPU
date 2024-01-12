@@ -12,37 +12,22 @@ entity ControlPath is
         ZuluClk : in std_ulogic; -- clock input
 
         MemRdStrobe : out std_ulogic; -- memory read strobe
-        MemWrStrobe : out std_ulogic -- memory write strobe
+        MemWrStrobe : out std_ulogic; -- memory write strobe
+        
+         ---------------------------------- [ ALU ] ------------------------
+  
+       ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
+       ALUFunc : in std_ulogic_vector(3 downto 0); -- selects the function
+       -- Of the ALU
+       ---------------------------------- [ MEM ] ------------------------
+       MemAddr : out DataVec; -- address wires of memory
+       MemWrData : out DataVec; -- data wires for writing the memory
+       MemRdData : in DataVec -- data wires for reading the memory
     );
 end ControlPath;
 
 
-architecture Behavioral of ControlPath is
-    component DataPath is
-        port (
-            ClkEnPC : in std_ulogic; -- clock enable of register PC
-            ClkEnRegFile : in std_ulogic; -- clock enable of register file
-            ClkEnOpcode : in std_ulogic; -- clock enable of register Opcode
-            SelPC : in std_ulogic; -- selectInput of SelPC-MUX
-            SelLoad : in std_ulogic; -- selectInput of SelLoad-MUX
-            SelAddr : in std_ulogic; -- selectInput of SelAddr-MUX
-            RegOpcode : out OpcodeVec; -- current opcode info CoreControl
-            ---------------------------------- [ ALU ] ------------------------
-            CarryIn : in std_ulogic; -- connects to carryIn input of ALU
-            CarryOut : out std_ulogic; -- connects to carryOut output of ALU
-            ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
-            ALUFunc : in std_ulogic_vector(3 downto 0); -- selects the function
-            -- Of the ALU
-            ---------------------------------- [ MEM ] ------------------------
-            MemAddr : out DataVec; -- address wires of memory
-            MemWrData : out DataVec; -- data wires for writing the memory
-            MemRdData : in DataVec; -- data wires for reading the memory
-            ---------------------------------- [ clk,reset ] ------------------
-            Reset : in std_ulogic; -- reset inpunt
-            ZuluClk : in std_ulogic -- clock input
-        ); 
-    end component;
-    
+architecture Behavioral of ControlPath is  
     component CounterShifter is
         generic ( Size : natural := 1); -- data width is 2^n (2^1=2 Bits)
         port (
@@ -56,10 +41,8 @@ architecture Behavioral of ControlPath is
     signal ALU_ZeroOut : std_ulogic;
     signal ALU_CarryIn : std_ulogic;
     signal cycle : std_ulogic_vector(2 downto 0);
-    signal MemAddr, MemWrData, MemRdData : DataVec;
     signal ClkEnPC, ClkEnRegFile, SelPC, SelLoad, SelAddr, ClkEnOpcode : std_ulogic; 
     signal RegOpcode : OpCodeVec;
-    signal ALUFunc : ALUFuncVec;
     signal instrTerminate : std_ulogic;
     
     
@@ -73,29 +56,7 @@ architecture Behavioral of ControlPath is
         return result;
       end function;
 begin
-    dataPath_instance : DataPath
-    port map(
-        ClkEnPC => ClkEnPC, -- clock enable of register PC
-        ClkEnRegFile => ClkEnRegFile, -- clock enable of register file
-        ClkEnOpcode => ClkEnOpcode, -- clock enable of register Opcode
-        SelPC => SelPC, -- selectInput of SelPC-MUX
-        SelLoad => SelLoad, -- selectInput of SelLoad-MUX
-        SelAddr => SelAddr, -- selectInput of SelAddr-MUX
-        RegOpcode => RegOpcode, -- current opcode info CoreControl
-        ---------------------------------- [ ALU ] ------------------------
-        CarryIn => ALU_CarryIn, -- connects to carryIn input of ALU
-        CarryOut => ALU_CarryOut, -- connects to carryOut output of ALU
-        ZeroOut => ALU_ZeroOut, -- connects to ZeroOut output of ALU
-        ALUFunc => ALUFunc, -- selects the function
-        -- Of the ALU
-        ---------------------------------- [ MEM ] ------------------------
-        MemAddr => MemAddr, -- address wires of memory
-        MemWrData => MemWrData, -- data wires for writing the memory
-        MemRdData => MemRdData, -- data wires for reading the memory
-        ---------------------------------- [ clk,reset ] ------------------
-        Reset => Reset, -- reset inpunt
-        ZuluClk => ZuluClk -- clock input
-    );
+    
 
 
     clockCycle: process(ZuluClk, Reset) is

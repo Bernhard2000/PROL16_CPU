@@ -28,6 +28,8 @@ begin
         MemRdStrobe => memrd,
         MemWrStrobe => memwr
     );
+    
+    
 
     -- Testprozedur
     stimulus: process
