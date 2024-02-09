@@ -7,7 +7,13 @@ use work.prol16_package.all;
 
 
 entity CPU is
-    port (
+    port (MemIOData : inout std_logic_vector(15 downto 0);
+    MemAddr : out DataVec;
+    MemCE : out std_ulogic; -- low-active (Chip Enable)
+    MemWE : out std_ulogic; -- low-active (Write Enable)
+    MemOE : out std_ulogic; -- low-active (Output Enable)
+    ClkEnOpcode : out std_ulogic;
+    LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
     ZuluClk : in std_ulogic);
 end CPU;
@@ -23,16 +29,14 @@ architecture Behavioral of CPU is
     signal ZuluClkInt : std_ulogic;
     
     signal ClkEnPC : std_ulogic;
+    signal ClkEnOpCode_sig : std_ulogic;
     signal ClkEnRegFile : std_ulogic;
     signal SelPC : std_ulogic;
     signal SelLoad : std_ulogic;
-    signal SelAddr, ClkEnOpcode, ALU_CarryIn, ALU_CarryOut, ALU_ZeroOut : std_ulogic;
     signal RegOpcode : OpcodeVec;
     
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
-    signal MemIO, MemAddr : DataVec;
-    signal OutputEnable, ChipEnable : std_ulogic;
     
     signal MemRdStrobe, MemWrStrobe : std_ulogic;
     
@@ -99,7 +103,7 @@ begin
     port map(
         ClkEnPC => ClkEnPC, -- clock enable of register PC
         ClkEnRegFile => ClkEnRegFile, -- clock enable of register file
-        ClkEnOpcode => ClkEnOpcode, -- clock enable of register Opcode
+        ClkEnOpcode => ClkEnOpcode_sig, -- clock enable of register Opcode
         SelPC => SelPC, -- selectInput of SelPC-MUX
         SelLoad => SelLoad, -- selectInput of SelLoad-MUX
         SelAddr => SelAddr, -- selectInput of SelAddr-MUX

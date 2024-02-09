@@ -211,7 +211,8 @@ begin
                             AluFunc <= "XXXX";
                             SelPC <= 'X';
                             SelLoad <= 'X';
-                        when OP_ADD =>
+                            assert false report "Simulation finished" severity failure;
+                          when OP_ADD =>
                             AluFunc <= ALU_AplusBplusCarry;
                             SelPC <= 'X';
                             SelLoad <= '0';
