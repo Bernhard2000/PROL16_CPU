@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 
 library work;
-use work.cpu_package.all;
+use work.prol16_package.all;
 
 entity Shiftright_testbench is
 end;
