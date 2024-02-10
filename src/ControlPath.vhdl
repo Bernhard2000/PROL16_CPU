@@ -17,12 +17,7 @@ entity ControlPath is
          ---------------------------------- [ ALU ] ------------------------
   
        ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
-       ALUFunc : out std_ulogic_vector(3 downto 0); -- selects the function
-       -- Of the ALU
-       ---------------------------------- [ MEM ] ------------------------
-       MemAddr : out DataVec; -- address wires of memory
-       MemWrData : out DataVec; -- data wires for writing the memory
-       MemRdData : in DataVec -- data wires for reading the memory
+       ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU
     );
 end ControlPath;
 
@@ -61,12 +56,17 @@ begin
 
     clockCycle: process(ZuluClk, Reset) is
     begin
-           if rising_edge(ZuluClk) then
+         if Reset = '1' then
+           cycle <= Cycle_1;
+        elsif rising_edge(ZuluClk) then
+            if instrTerminate = '1' then
+               cycle <= Cycle_1;
+           else
                 cycle <= cycle(1 downto 0) & cycle(2);
            end if;
-           if Reset = '1' then
-                cycle <= Cycle_1;
-           end if;
+      end if;
+           
+           
     end process clockCycle;
     
     readWriteFlag: process(ZuluClk, cycle) is
@@ -103,13 +103,10 @@ begin
     begin
        ClkEnOpCode <= instrTerminate;
        if rising_edge(ZuluClk) then
-        if instrTerminate = '1' then
-            cycle <= Cycle_1;
-            instrTerminate <= '0';
-        end if;
 
         case cycle is
             when Cycle_1 => --increment PC
+                instrTerminate <= '0';
                 ClkEnPC <= '1';
                 SelPC <= '1';
                 ClkEnOpcode <= '0';
@@ -291,7 +288,6 @@ begin
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
-                cycle <= Cycle_1;
                 ClkEnOpcode <= '1';
                 SelAddr <= '0';
                 ClkEnRegFile <= '1';

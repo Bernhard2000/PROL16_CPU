@@ -81,12 +81,7 @@ architecture Behavioral of CPU is
               ---------------------------------- [ ALU ] ------------------------
        
             ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
-            ALUFunc : in std_ulogic_vector(3 downto 0); -- selects the function
-            -- Of the ALU
-            ---------------------------------- [ MEM ] ------------------------
-            MemAddr : out DataVec; -- address wires of memory
-            MemWrData : out DataVec; -- data wires for writing the memory
-            MemRdData : in DataVec -- data wires for reading the memory
+            ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function Of the ALU    
          );
      
      end component;
@@ -109,7 +104,7 @@ begin
         ALUFunc => ALUFunc, -- selects the function
         -- Of the ALU
         ---------------------------------- [ MEM ] ------------------------
-        MemAddr => MemAddr, -- address wires of memory
+        MemAddr => MemAddrInt, -- address wires of memory
         MemWrData => MemWrData, -- data wires for writing the memory
         MemRdData => MemRdData, -- data wires for reading the memory
         ---------------------------------- [ clk,reset ] ------------------
@@ -124,11 +119,9 @@ begin
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
         ZeroOut => ZeroOut_sig,
-        ALUFunc => AlUFunc,            
-        MemAddr => MemAddr,
-        MemWrData => MemWrData,
-        MemRdData => MemRdData
+        ALUFunc => AlUFunc         
     );
-    
+
+
     
 end Behavioral;
