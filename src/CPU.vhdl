@@ -90,17 +90,6 @@ architecture Behavioral of CPU is
          );
      
      end component;
-     
-     component memory is
-       generic (
-         file_base_g : string := "main"); -- base name for assember, log and dump file
-       port (
-         mem_addr_i : in    std_ulogic_vector(15 downto 0);      -- address input
-         mem_dat_io : inout std_logic_vector(15 downto 0);       -- data i/o
-         mem_ce_ni  : in    std_ulogic;      -- chip enable (low active)
-         mem_oe_ni  : in    std_ulogic;      -- output enable (low active)
-         mem_we_ni  : in    std_ulogic);     -- write enable (low active)    
-     end component;
 
 begin
 --TODO implementation
@@ -140,17 +129,6 @@ begin
         MemWrData => MemWrData,
         MemRdData => MemRdData
     );
-    
-    memory_instance : memory
-    port map (
-        mem_addr_i => MemAddr,
-        mem_dat_io => MemIO,
-        mem_ce_ni => ChipEnable,
-        mem_oe_ni => OutputEnable,
-        mem_we_ni => MemWrStrobe
-     
-    );
-    
     
     
 end Behavioral;
