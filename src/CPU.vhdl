@@ -117,11 +117,13 @@ begin
         MemCE <= '0';
         MemOE <= '0';
         MemWE <= '1';
+        MemIOData <= to_stdlogicvector(MemRdData);
     end if;
     if rising_edge(MemWrStrobe) then
         MemCE <= '1';
         MemOE <= '1';
         MemWE <= '1';
+        MemIOData <= to_stdlogicvector(MemWrData);
     end if;
 end process;
 end Behavioral;
