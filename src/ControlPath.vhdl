@@ -1,5 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.all;
+
 
 
 library work;
@@ -33,7 +35,7 @@ architecture Behavioral of ControlPath is
     signal ALU_CarryOut : std_ulogic;
     signal ALU_ZeroOut : std_ulogic;
     signal ALU_CarryIn : std_ulogic;
-    signal cycle : std_ulogic_vector(2 downto 0);
+    signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC, ClkEnRegFile, SelPC, SelLoad, SelAddr, ClkEnOpcode : std_ulogic; 
     signal RegOpcode : OpCodeVec;
     signal instrTerminate : std_ulogic;
@@ -56,11 +58,14 @@ begin
     begin
          if Reset = '1' then
            cycle <= Cycle_1;
+          report "Reset";
         elsif rising_edge(ZuluClk) then
             if instrTerminate = '1' then
                cycle <= Cycle_1;
+               report "Terminate instruction";
            else
                 cycle <= cycle(1 downto 0) & cycle(2);
+                report "New clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
            end if;
       end if;
            
@@ -89,7 +94,7 @@ begin
                     MemWrStrobe <= '0';
                     MemRdStrobe <= '1';
                 when others =>
-                    report "Unreachable clock cycle"; 
+                    report "Unreachable clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
                     MemWrStrobe <= '0';
                     MemRdStrobe <= '1';
             end case;
@@ -123,6 +128,7 @@ begin
 
                     case RegOpcode is 
                         when OP_LOADI =>
+                            report "LOADI";
                             SelAddr <= '0';
                             SelLoad <= '1';
                             ClkEnRegFile <= '1';
@@ -132,6 +138,7 @@ begin
                             SelPC <= '1';
 
                         when OP_LOAD =>
+                            report "LOAD";
                             SelAddr <= '1';
                             SelLoad <= '1';
                             ClkEnRegFile <= '0';
@@ -141,6 +148,7 @@ begin
                             SelPC <= 'X';
 
                         when OP_STORE =>
+                            report "STORE";
                             SelAddr <= '1';
                             SelLoad <= 'X';
                             ClkEnRegFile <= '0';
@@ -149,11 +157,13 @@ begin
                             ClkEnPC <= '1';
                             SelPC <= '1';
                         when OP_JUMP =>
+                            report "JUMP";
                             SelPC <= '0';
                             ClkEnPC <= '1';
                             SelLoad <= 'X';
                             AluFunc <= "XXXX";
                         when OP_JUMPC =>
+                            report "JUMPC";
                             if ALU_CarryOut = '1' then
                                 SelPC <= '0';
                                 ClkEnPC <= '1';
@@ -166,59 +176,70 @@ begin
                                 AluFunc <= "XXXX";
                             end if;
                         when OP_JUMPZ =>
-                                if ALU_ZeroOut = '1' then
-                                    SelPC <= '0';
-                                    ClkEnPC <= '1';
-                                    SelLoad <= 'X';
-                                    AluFunc <= "XXXX";
-                                else
-                                    SelPC <= 'X';
-                                    ClkEnPC <= '0';
-                                    SelLoad <= 'X';
-                                    AluFunc <= "XXXX";
-                                end if;
+                            report "JUMPZ";
+                            if ALU_ZeroOut = '1' then
+                                SelPC <= '0';
+                                ClkEnPC <= '1';
+                                SelLoad <= 'X';
+                                AluFunc <= "XXXX";
+                            else
+                                SelPC <= 'X';
+                                ClkEnPC <= '0';
+                                SelLoad <= 'X';
+                                AluFunc <= "XXXX";
+                            end if;
                         when OP_MOVE =>
+                        report "MOVE";
                             AluFunc <= ALU_SideB;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             SelLoad <= '0';
                         when OP_AND =>
+                            report "AND";
                             AluFunc <= ALU_AandB;
                             SelPC <= '0';
                             SelLoad <= '0';
                         when OP_OR =>
+                            report "OR";
                             AluFunc <= ALU_AorB;
                             SelPC <= '0';
                             SelLoad <= '0';
                         when OP_XOR =>
+                            report "XOR";
                             AluFunc <= ALU_AxorB;
                             SelPC <= '0';
                             SelLoad <= '0';
                         when OP_NOT =>
+                            report "NOT";
                             AluFunc <= ALU_NotA;
                             SelPC <= '0';
                             SelLoad <= '0';
                         when OP_NOP =>
+                            report "NOP";
                             AluFunc <= "XXXX";
                             SelPC <= 'X';
                             SelLoad <= 'X';
                         when OP_SLEEP =>
+                            report "SLEEP";
                             AluFunc <= "XXXX";
                             SelPC <= 'X';
                             SelLoad <= 'X';
                             assert false report "Simulation finished" severity failure;
                           when OP_ADD =>
+                            report "ADD";
                             AluFunc <= ALU_AplusBplusCarry;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ALU_CarryIn <= '0';
                             ClkENRegFile <= '1';
                         when OP_ADDC => 
+                            report "ADDC";
                             AluFunc <= ALU_AplusBplusCarry;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                         when OP_SUB => 
+                            report "SUB";
                             AluFunc <= ALU_AminusBminusCarry;
                             SelPC <= 'X';
                             ClkEnPC <= '0';
@@ -227,6 +248,7 @@ begin
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_SUBC => 
+                            report "SUBC";
                             AluFunc <= ALU_AminusBminusCarry;
                             SelPC <= 'X';
                             ClkEnPC <= '0';
@@ -234,6 +256,7 @@ begin
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_COMP => 
+                            report "COMP";
                             AluFunc <= ALU_AminusBminusCarry;
                             SelPC <= 'X';
                             ClkEnPC <= '0';
@@ -241,18 +264,21 @@ begin
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_INC =>
+                            report "INC";
                             AluFunc <= ALU_A_INC;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_DEC =>
+                            report "DEC";
                             AluFunc <= ALU_A_DEC;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_SHL => 
+                            report "SHL";
                             ALUFunc <= ALU_ShiftALeft;
                             SelPC <= 'X';
                             SelLoad <= '0';
@@ -260,6 +286,7 @@ begin
                             ALU_CarryIn <= '0';
                             instrTerminate <= '1';
                         when OP_SHR =>
+                            report "SHR";
                             ALUFunc <= ALU_ShiftARight;
                             SelPC <= 'X';
                             SelLoad <= '0';
@@ -267,12 +294,14 @@ begin
                             ALU_CarryIn <= '0';
                             instrTerminate <= '1';
                         when OP_SHRC => 
+                            report "SHRC";
                             ALUFunc <= ALU_ShiftARight;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
                         when OP_SHLC => 
+                            report "SHLC";
                             ALUFunc <= ALU_ShiftALeft;
                             SelPC <= 'X';
                             SelLoad <= '0';

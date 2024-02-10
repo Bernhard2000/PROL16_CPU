@@ -19,7 +19,7 @@ architecture behavior of ControlPath_tb is
     );
     end component;
     
-    signal reset, zuluclk : std_ulogic;
+    signal reset, zuluclk : std_ulogic := '0';
     signal memrd, memwr : std_ulogic;
 begin
     dut: ControlPath port map (
@@ -29,12 +29,6 @@ begin
         MemWrStrobe => memwr
     );
     
-    
+  ZuluClk <= not ZuluClk after 100ns;
 
-    -- Testprozedur
-    stimulus: process
-    begin
-        -- Initialisieren Sie die Eingangssignale
-        
-    end process;
 end behavior;
