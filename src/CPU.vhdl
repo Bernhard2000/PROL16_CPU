@@ -78,9 +78,7 @@ architecture Behavioral of CPU is
              MemRdStrobe : out std_ulogic; -- memory read strobe
              MemWrStrobe : out std_ulogic; -- memory write strobe
              
-              ---------------------------------- [ ALU ] ------------------------
-       
-            ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
+              ---------------------------------- [ ALU ] ------------------------     
             ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function Of the ALU    
          );
      

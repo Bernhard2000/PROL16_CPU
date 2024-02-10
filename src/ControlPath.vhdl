@@ -15,9 +15,7 @@ entity ControlPath is
         MemWrStrobe : out std_ulogic; -- memory write strobe
         
          ---------------------------------- [ ALU ] ------------------------
-  
-       ZeroOut : out std_ulogic; -- connects to ZeroOut output of ALU
-       ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU
+         ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU
     );
 end ControlPath;
 
