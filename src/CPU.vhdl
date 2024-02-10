@@ -28,12 +28,17 @@ architecture Behavioral of CPU is
     signal ResetInt : std_ulogic;
     signal ZuluClkInt : std_ulogic;
     
-    signal ClkEnPC : std_ulogic;
+    signal ClkEnPC_sig : std_ulogic;
     signal ClkEnOpCode_sig : std_ulogic;
-    signal ClkEnRegFile : std_ulogic;
-    signal SelPC : std_ulogic;
-    signal SelLoad : std_ulogic;
-    signal RegOpcode : OpcodeVec;
+    signal ClkEnRegFile_sig : std_ulogic;
+    signal SelPC_sig : std_ulogic;
+    signal SelLoad_sig : std_ulogic;
+    signal RegOpcode_sig : OpcodeVec;
+    signal SelAddr_sig : std_ulogic;
+    
+    signal CarryIn_sig : std_ulogic;
+    signal CarryOut_sig : std_ulogic;
+    signal ZeroOut_sig : std_ulogic;
     
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
@@ -101,17 +106,17 @@ begin
 --TODO implementation
     dataPath_instance : DataPath
     port map(
-        ClkEnPC => ClkEnPC, -- clock enable of register PC
-        ClkEnRegFile => ClkEnRegFile, -- clock enable of register file
+        ClkEnPC => ClkEnPC_sig, -- clock enable of register PC
+        ClkEnRegFile => ClkEnRegFile_sig, -- clock enable of register file
         ClkEnOpcode => ClkEnOpcode_sig, -- clock enable of register Opcode
-        SelPC => SelPC, -- selectInput of SelPC-MUX
-        SelLoad => SelLoad, -- selectInput of SelLoad-MUX
-        SelAddr => SelAddr, -- selectInput of SelAddr-MUX
-        RegOpcode => RegOpcode, -- current opcode info CoreControl
+        SelPC => SelPC_sig, -- selectInput of SelPC-MUX
+        SelLoad => SelLoad_sig, -- selectInput of SelLoad-MUX
+        SelAddr => SelAddr_sig, -- selectInput of SelAddr-MUX
+        RegOpcode => RegOpcode_sig, -- current opcode info CoreControl
         ---------------------------------- [ ALU ] ------------------------
-        CarryIn => ALU_CarryIn, -- connects to carryIn input of ALU
-        CarryOut => ALU_CarryOut, -- connects to carryOut output of ALU
-        ZeroOut => ALU_ZeroOut, -- connects to ZeroOut output of ALU
+        CarryIn => CarryIn_sig, -- connects to carryIn input of ALU
+        CarryOut => CarryOut_sig, -- connects to carryOut output of ALU
+        ZeroOut => ZeroOut_sig, -- connects to ZeroOut output of ALU
         ALUFunc => ALUFunc, -- selects the function
         -- Of the ALU
         ---------------------------------- [ MEM ] ------------------------
@@ -129,7 +134,7 @@ begin
         ZuluClk => ZuluClk,    
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
-        ZeroOut => ALU_ZeroOut,
+        ZeroOut => ZeroOut_sig,
         ALUFunc => AlUFunc,            
         MemAddr => MemAddr,
         MemWrData => MemWrData,
