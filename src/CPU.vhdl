@@ -18,16 +18,7 @@ entity CPU is
     ZuluClk : in std_ulogic);
 end CPU;
 
-architecture Behavioral of CPU is
-    signal MemAddrInt : DataVec;
-    signal MemCEInt : std_ulogic;
-    signal MemWEInt : std_ulogic;
-    signal MemOEInt : std_ulogic;
-    signal ClkEnOpcodeInt : std_ulogic;
-    signal LegalOpcodePresentInt : std_ulogic;
-    signal ResetInt : std_ulogic;
-    signal ZuluClkInt : std_ulogic;
-    
+architecture Behavioral of CPU is    
     signal ClkEnPC_sig : std_ulogic;
     signal ClkEnOpCode_sig : std_ulogic;
     signal ClkEnRegFile_sig : std_ulogic;
@@ -102,7 +93,7 @@ begin
         ALUFunc => ALUFunc, -- selects the function
         -- Of the ALU
         ---------------------------------- [ MEM ] ------------------------
-        MemAddr => MemAddrInt, -- address wires of memory
+        MemAddr => MemAddr, -- address wires of memory
         MemWrData => MemWrData, -- data wires for writing the memory
         MemRdData => MemRdData, -- data wires for reading the memory
         ---------------------------------- [ clk,reset ] ------------------
@@ -116,10 +107,21 @@ begin
         ZuluClk => ZuluClk,    
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
-        ZeroOut => ZeroOut_sig,
         ALUFunc => AlUFunc         
     );
 
 
-    
+MemorySignals: process (MemRdStrobe, MemWrStrobe)
+begin
+    if rising_edge(MemRdStrobe) then
+        MemCE <= '0';
+        MemOE <= '0';
+        MemWE <= '1';
+    end if;
+    if rising_edge(MemWrStrobe) then
+        MemCE <= '1';
+        MemOE <= '1';
+        MemWE <= '1';
+    end if;
+end process;
 end Behavioral;
