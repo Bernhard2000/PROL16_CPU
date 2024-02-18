@@ -29,7 +29,7 @@ entity DataPath is
     -- Of the ALU
     ---------------------------------- [ MEM ] ------------------------
     MemAddr
-     : out DataVec; -- address wires of memory
+     : out DataVec := (others => '0'); -- address wires of memory
     MemWrData
      : out DataVec; -- data wires for writing the memory
     MemRdData
@@ -88,7 +88,7 @@ function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) retur
 signal AluResult : DataVec;
 signal RaValue, RbValue : DataVec;
 signal aluSideA : DataVec;
-signal regPC : DataVec;
+signal regPC : DataVec := (others => '0');
 signal RegFileIn : DataVec;
 signal RegTmpRa, RegTmpRb : DataVec;
 signal RegSelRa : std_ulogic_vector(RegFileBits-1 downto 0);

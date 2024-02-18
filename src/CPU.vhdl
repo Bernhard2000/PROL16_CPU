@@ -9,9 +9,9 @@ use work.prol16_package.all;
 entity CPU is
     port (MemIOData : inout std_logic_vector(15 downto 0);
     MemAddr : out DataVec;
-    MemCE : out std_ulogic; -- low-active (Chip Enable)
-    MemWE : out std_ulogic; -- low-active (Write Enable)
-    MemOE : out std_ulogic; -- low-active (Output Enable)
+    MemCE : out std_ulogic := '0'; -- low-active (Chip Enable)
+    MemWE : out std_ulogic := '1'; -- low-active (Write Enable)
+    MemOE : out std_ulogic := '0'; -- low-active (Output Enable)
     ClkEnOpcode : out std_ulogic;
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
@@ -19,17 +19,17 @@ entity CPU is
 end CPU;
 
 architecture Behavioral of CPU is    
-    signal ClkEnPC_sig : std_ulogic;
-    signal ClkEnOpCode_sig : std_ulogic;
-    signal ClkEnRegFile_sig : std_ulogic;
-    signal SelPC_sig : std_ulogic;
-    signal SelLoad_sig : std_ulogic;
-    signal RegOpcode_sig : OpcodeVec;
-    signal SelAddr_sig : std_ulogic;
+    signal ClkEnPC_sig : std_ulogic := '0';
+    signal ClkEnOpCode_sig : std_ulogic := '0';
+    signal ClkEnRegFile_sig : std_ulogic := '0';
+    signal SelPC_sig : std_ulogic := '0';
+    signal SelLoad_sig : std_ulogic := '0';
+    signal RegOpcode_sig : OpcodeVec := (others => '0');
+    signal SelAddr_sig : std_ulogic := '0';
     
-    signal CarryIn_sig : std_ulogic;
-    signal CarryOut_sig : std_ulogic;
-    signal ZeroOut_sig : std_ulogic;
+    signal CarryIn_sig : std_ulogic := '0';
+    signal CarryOut_sig : std_ulogic := '0';
+    signal ZeroOut_sig : std_ulogic := '0';
     
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
@@ -68,7 +68,9 @@ architecture Behavioral of CPU is
      
              MemRdStrobe : out std_ulogic; -- memory read strobe
              MemWrStrobe : out std_ulogic; -- memory write strobe
-             
+
+             ClkEnOpcode : out std_ulogic;
+
               ---------------------------------- [ ALU ] ------------------------     
             ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function Of the ALU    
          );
@@ -107,6 +109,7 @@ begin
         ZuluClk => ZuluClk,    
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
+        ClkEnOpcode => ClkEnOpcode,
         ALUFunc => AlUFunc         
     );
 
@@ -120,9 +123,9 @@ begin
         MemIOData <= to_stdlogicvector(MemRdData);
     end if;
     if rising_edge(MemWrStrobe) then
-        MemCE <= '1';
+        MemCE <= '0';
         MemOE <= '1';
-        MemWE <= '1';
+        MemWE <= '0';
         MemIOData <= to_stdlogicvector(MemWrData);
     end if;
 end process;

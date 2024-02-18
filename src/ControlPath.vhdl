@@ -15,9 +15,16 @@ entity ControlPath is
 
         MemRdStrobe : out std_ulogic; -- memory read strobe
         MemWrStrobe : out std_ulogic; -- memory write strobe
-        
+
+        ClkEnOpcode     : out std_ulogic;
+        ClkEnPC         : out std_ulogic;
+        ClkEnRegFile    : out std_ulogic;
+        SelLoad         : out std_ulogic;
+        SelAddr         : out std_ulogic;
+        SelPC           : out std_ulogic;
+
          ---------------------------------- [ ALU ] ------------------------
-         ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU
+         ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU        
     );
 end ControlPath;
 
@@ -36,7 +43,7 @@ architecture Behavioral of ControlPath is
     signal ALU_ZeroOut : std_ulogic;
     signal ALU_CarryIn : std_ulogic;
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
-    signal ClkEnPC, ClkEnRegFile, SelPC, SelLoad, SelAddr, ClkEnOpcode : std_ulogic; 
+    signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
     signal RegOpcode : OpCodeVec;
     signal instrTerminate : std_ulogic;
     
@@ -51,8 +58,6 @@ architecture Behavioral of ControlPath is
         return result;
       end function;
 begin
-    
-
 
     clockCycle: process(ZuluClk, Reset) is
     begin
@@ -109,16 +114,17 @@ begin
 
         case cycle is
             when Cycle_1 => --increment PC
+                report "Increment PC";
                 instrTerminate <= '0';
                 ClkEnPC <= '1';
                 SelPC <= '1';
-                ClkEnOpcode <= '0';
+                --ClkEnOpcode <= '0';
                 SelAddr <= 'X';
                 SelLoad <= 'X';
                 ClkEnRegFile <= '0';
                 AluFunc <= ALU_A_INC;           
             when Cycle_2 =>
-                ClkEnOpcode <= '0';
+                --ClkEnOpcode <= '0';
                     case RegOpcode is 
                         when OP_LOADI | OP_LOAD | OP_STORE =>
                             instrTerminate <= '0';
@@ -315,7 +321,8 @@ begin
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
-                ClkEnOpcode <= '1';
+                --ClkEnOpcode <= '1';
+                instrTerminate <= '1';
                 SelAddr <= '0';
                 ClkEnRegFile <= '1';
                 ClkEnPC <= '0';
