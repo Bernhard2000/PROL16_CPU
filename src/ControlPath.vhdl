@@ -12,6 +12,10 @@ entity ControlPath is
     port ( 
         Reset : in std_ulogic; -- reset inpunt
         ZuluClk : in std_ulogic; -- clock input
+        
+        RegOpcode : in OpcodeVec;
+        ALU_CarryOut    : in std_ulogic;
+        ALU_ZeroOut     : in std_ulogic;
 
         MemRdStrobe : out std_ulogic; -- memory read strobe
         MemWrStrobe : out std_ulogic; -- memory write strobe
@@ -39,12 +43,10 @@ architecture Behavioral of ControlPath is
         );
     end component;
 
-    signal ALU_CarryOut : std_ulogic;
-    signal ALU_ZeroOut : std_ulogic;
+  
     signal ALU_CarryIn : std_ulogic;
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
-    signal RegOpcode : OpCodeVec;
     signal instrTerminate : std_ulogic;
     
     
