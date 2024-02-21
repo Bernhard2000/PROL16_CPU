@@ -65,14 +65,24 @@ architecture Behavioral of CPU is
      port ( 
              Reset : in std_ulogic; -- reset inpunt
              ZuluClk : in std_ulogic; -- clock input
+             
+             RegOpcode : in OpcodeVec;
+             ALU_CarryOut    : in std_ulogic;
+             ALU_ZeroOut     : in std_ulogic;
      
              MemRdStrobe : out std_ulogic; -- memory read strobe
              MemWrStrobe : out std_ulogic; -- memory write strobe
-
-             ClkEnOpcode : out std_ulogic;
-
-              ---------------------------------- [ ALU ] ------------------------     
-            ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function Of the ALU    
+     
+             ClkEnOpcode     : out std_ulogic;
+             ClkEnPC         : out std_ulogic;
+             ClkEnRegFile    : out std_ulogic;
+             SelLoad         : out std_ulogic;
+             SelAddr         : out std_ulogic;
+             SelPC           : out std_ulogic;
+             ALU_CarryIn     : out std_ulogic;
+     
+              ---------------------------------- [ ALU ] ------------------------
+              ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU        
          );
      
      end component;
@@ -107,10 +117,23 @@ begin
     port map (
         Reset => Reset,
         ZuluClk => ZuluClk,    
+        
+        RegOpcode => RegOpcode_sig,
+        ALU_CarryOut => CarryOut_sig,
+        ALU_ZeroOut => ZeroOut_sig, -- connects to ZeroOut output of ALU
+        
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
+        
         ClkEnOpcode => ClkEnOpcode,
-        ALUFunc => AlUFunc         
+        ClkEnPC => ClkEnPC_sig,
+        ClkEnRegFile => ClkEnRegFile_sig,
+        SelPC => SelPC_sig, -- selectInput of SelPC-MUX
+        SelLoad => SelLoad_sig, -- selectInput of SelLoad-MUX
+        SelAddr => SelAddr_sig, -- selectInput of SelAddr-MUX
+          
+        ALU_CarryIn => CarryIn_sig, -- connects to carryIn input of ALU         
+        ALUFunc => ALUFunc -- selects the function
     );
 
 

@@ -26,6 +26,7 @@ entity ControlPath is
         SelLoad         : out std_ulogic;
         SelAddr         : out std_ulogic;
         SelPC           : out std_ulogic;
+        ALU_CarryIn     : out std_ulogic;
 
          ---------------------------------- [ ALU ] ------------------------
          ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU        
@@ -43,8 +44,7 @@ architecture Behavioral of ControlPath is
         );
     end component;
 
-  
-    signal ALU_CarryIn : std_ulogic;
+ 
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
     signal instrTerminate : std_ulogic;
