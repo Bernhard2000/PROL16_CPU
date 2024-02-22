@@ -86,11 +86,11 @@ function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) retur
     end function;
 
 signal AluResult : DataVec;
-signal RaValue, RbValue : DataVec;
-signal aluSideA : DataVec;
+signal RaValue, RbValue : DataVec := (others => '0');
+signal aluSideA : DataVec := (others => '0');
 signal regPC : DataVec := (others => '0');
 signal RegFileIn : DataVec;
-signal RegTmpRa, RegTmpRb : DataVec;
+signal RegTmpRa, RegTmpRb : DataVec := (others => '0');
 signal RegSelRa : std_ulogic_vector(RegFileBits-1 downto 0);
 signal RegSelRb : std_ulogic_vector(RegFileBits-1 downto 0);
 
@@ -122,9 +122,11 @@ begin
     writePC : process(ZuluClk, Reset, SelPC) is
     begin
         if Reset = ResetActive then
+            report "Reset PC";
             RegPC <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
             if ClkEnPC = '1' then
+                report "Set PC";
                 case SelPC is
                     when '0' => RegPC <= RaValue;
                     when '1' => RegPC <= AluResult;
@@ -178,6 +180,7 @@ begin
             RegSelRb <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
             if ClkEnOpcode = '1' then
+                report "Set Opcode";
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
                 RegOpcode <= opcodeValue.Code;
                 RegSelRa <= opcodeValue.Ra;

@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.all;
 
 library work;
 use work.prol16_package.all;
@@ -15,6 +16,7 @@ entity CPU is
     ClkEnOpcode : out std_ulogic;
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
+    ClkEnPC : out std_ulogic;
     ZuluClk : in std_ulogic);
 end CPU;
 
@@ -88,6 +90,7 @@ architecture Behavioral of CPU is
      end component;
 
 begin
+    ClkEnPC <= ClkEnPC_sig;
 --TODO implementation
     dataPath_instance : DataPath
     port map(
@@ -137,19 +140,21 @@ begin
     );
 
 
+    MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
+
+
 MemorySignals: process (MemRdStrobe, MemWrStrobe)
 begin
-    if rising_edge(MemRdStrobe) then
+    if MemRdStrobe = '1' then
         MemCE <= '0';
         MemOE <= '0';
         MemWE <= '1';
-        MemIOData <= to_stdlogicvector(MemRdData);
+        MemRdData <= std_ulogic_vector(MemIOData);
     end if;
-    if rising_edge(MemWrStrobe) then
-        MemCE <= '0';
+    if MemWrStrobe = '1' then
+        MemCE <= '1';
         MemOE <= '1';
-        MemWE <= '0';
-        MemIOData <= to_stdlogicvector(MemWrData);
+        MemWE <= '1';
     end if;
 end process;
 end Behavioral;

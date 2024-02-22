@@ -84,7 +84,7 @@ begin
         if rising_edge(ZuluClk) then
             case cycle is
                 when Cycle_1 =>
-                    MemRdStrobe <= '0';
+                    MemRdStrobe <= '1';
                     MemWrStrobe <= '0'; 
                 when Cycle_2 =>
                     if RegOpCode =  OP_STORE then
@@ -117,15 +117,17 @@ begin
         case cycle is
             when Cycle_1 => --increment PC
                 report "Increment PC";
-                instrTerminate <= '0';
+                instrTerminate <= '1';
                 ClkEnPC <= '1';
                 SelPC <= '1';
+                ALU_CarryIn <= '0';
                 --ClkEnOpcode <= '0';
-                SelAddr <= 'X';
+                SelAddr <= '0';
                 SelLoad <= 'X';
                 ClkEnRegFile <= '0';
                 AluFunc <= ALU_A_INC;           
             when Cycle_2 =>
+                report "Opcode: " &integer'image(to_integer(unsigned(RegOpcode)));
                 --ClkEnOpcode <= '0';
                     case RegOpcode is 
                         when OP_LOADI | OP_LOAD | OP_STORE =>
@@ -225,8 +227,8 @@ begin
                         when OP_NOP =>
                             report "NOP";
                             AluFunc <= "XXXX";
-                            SelPC <= 'X';
-                            SelLoad <= 'X';
+                            SelPC <= '0';
+                            SelLoad <= '0';
                         when OP_SLEEP =>
                             report "SLEEP";
                             AluFunc <= "XXXX";
