@@ -37,6 +37,7 @@ architecture Behavioral of CPU is
     signal MemWrData, MemRdData : DataVec;
     
     signal MemRdStrobe, MemWrStrobe : std_ulogic;
+    signal memCE_sig, memOE_sig, memWE_sig : std_ulogic;
     
     component DataPath is
             port (
@@ -140,21 +141,29 @@ begin
     );
 
 
-    MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
+    MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
+    MemRdData <= std_ulogic_vector(MemIOData);
 
 
-MemorySignals: process (MemRdStrobe, MemWrStrobe)
+    MemCE <= memCE_sig;
+    MemOE <= memOE_sig;
+    MemWE <= memWE_sig;
+    
+
+MemorySignals: process (ZuluCLK)
 begin
     if MemRdStrobe = '1' then
-        MemCE <= '0';
-        MemOE <= '0';
-        MemWE <= '1';
-        MemRdData <= std_ulogic_vector(MemIOData);
-    end if;
-    if MemWrStrobe = '1' then
-        MemCE <= '1';
-        MemOE <= '1';
-        MemWE <= '1';
+        memCE_sig <= '0';
+        memOE_sig <= '0';
+        memWE_sig <= '1';
+    elsif MemWrStrobe = '1' then
+        memCE_sig <= '0';
+        memOE_sig <= '1';
+        memWE_sig <= '0';
+    else 
+        memCE_sig <= '1';
+        memOE_sig <= '1';
+        memWE_sig <= '1';
     end if;
 end process;
 end Behavioral;

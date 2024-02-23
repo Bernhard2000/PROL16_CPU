@@ -1,5 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.all;
+
 
 library work;
 use work.prol16_package.all;
@@ -93,7 +95,7 @@ signal RegFileIn : DataVec;
 signal RegTmpRa, RegTmpRb : DataVec := (others => '0');
 signal RegSelRa : std_ulogic_vector(RegFileBits-1 downto 0);
 signal RegSelRb : std_ulogic_vector(RegFileBits-1 downto 0);
-
+signal RegOpcode_sig : OpcodeVec := (others => '0');
 
 begin
     registerfile_instance : RegisterFile
@@ -126,7 +128,6 @@ begin
             RegPC <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
             if ClkEnPC = '1' then
-                report "Set PC";
                 case SelPC is
                     when '0' => RegPC <= RaValue;
                     when '1' => RegPC <= AluResult;
@@ -175,14 +176,14 @@ begin
     variable opcodeValue : OpcodeValueType;
     begin
         if Reset = ResetActive then
-            RegOpcode <= (others => '0');
+            RegOpcode_sig <= (others => '0');
             RegSelRa <= (others => '0');
             RegSelRb <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
             if ClkEnOpcode = '1' then
-                report "Set Opcode";
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
-                RegOpcode <= opcodeValue.Code;
+                report "Opcode: " &integer'image(to_integer(unsigned(opcodeValue.Code)));
+                RegOpcode_sig <= opcodeValue.Code;
                 RegSelRa <= opcodeValue.Ra;
                 RegSelRb <= opcodeValue.Rb;
             end if;
@@ -193,5 +194,6 @@ begin
     With SelAddr select MemAddr <= RegPC when '0', RegTmpRb when '1', (others => 'X') when others;
     AluSideA <= RegTmpRa when SelPC = '0' else RegPC;
     MemWrData <= RegTmpRa;
-    
+    RegOpcode <= RegOpcode_sig;
+
 end Behavioral;

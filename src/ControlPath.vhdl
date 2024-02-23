@@ -47,7 +47,7 @@ architecture Behavioral of ControlPath is
  
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
-    signal instrTerminate : std_ulogic;
+    signal instrTerminate : std_ulogic := '1';
     
     
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
@@ -117,7 +117,7 @@ begin
         case cycle is
             when Cycle_1 => --increment PC
                 report "Increment PC";
-                instrTerminate <= '1';
+                instrTerminate <= '0';
                 ClkEnPC <= '1';
                 SelPC <= '1';
                 ALU_CarryIn <= '0';
@@ -133,6 +133,7 @@ begin
                         when OP_LOADI | OP_LOAD | OP_STORE =>
                             instrTerminate <= '0';
                         when others =>
+                            SelAddr <= '0';
                             instrTerminate <= '1';
                         end case;             
 
@@ -204,31 +205,37 @@ begin
                             SelPC <= 'X';
                             SelLoad <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_AND =>
                             report "AND";
                             AluFunc <= ALU_AandB;
                             SelPC <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_OR =>
                             report "OR";
                             AluFunc <= ALU_AorB;
                             SelPC <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_XOR =>
                             report "XOR";
                             AluFunc <= ALU_AxorB;
                             SelPC <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_NOT =>
                             report "NOT";
                             AluFunc <= ALU_NotA;
                             SelPC <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_NOP =>
                             report "NOP";
                             AluFunc <= "XXXX";
                             SelPC <= '0';
                             SelLoad <= '0';
+                            ClkEnPC <= '0';
                         when OP_SLEEP =>
                             report "SLEEP";
                             AluFunc <= "XXXX";
@@ -242,12 +249,14 @@ begin
                             SelLoad <= '0';
                             ALU_CarryIn <= '0';
                             ClkENRegFile <= '1';
+                            ClkEnPC <= '0';
                         when OP_ADDC => 
                             report "ADDC";
                             AluFunc <= ALU_AplusBplusCarry;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
+                            ClkEnPC <= '0';
                         when OP_SUB => 
                             report "SUB";
                             AluFunc <= ALU_AminusBminusCarry;
@@ -256,7 +265,6 @@ begin
                             ALU_CarryIn <= '0';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                         when OP_SUBC => 
                             report "SUBC";
                             AluFunc <= ALU_AminusBminusCarry;
@@ -280,6 +288,7 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when OP_DEC =>
                             report "DEC";
                             AluFunc <= ALU_A_DEC;
@@ -287,6 +296,7 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when OP_SHL => 
                             report "SHL";
                             ALUFunc <= ALU_ShiftALeft;
@@ -295,6 +305,7 @@ begin
                             ClkENRegFile <= '1';
                             ALU_CarryIn <= '0';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when OP_SHR =>
                             report "SHR";
                             ALUFunc <= ALU_ShiftARight;
@@ -303,6 +314,7 @@ begin
                             ClkENRegFile <= '1';
                             ALU_CarryIn <= '0';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when OP_SHRC => 
                             report "SHRC";
                             ALUFunc <= ALU_ShiftARight;
@@ -310,6 +322,7 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when OP_SHLC => 
                             report "SHLC";
                             ALUFunc <= ALU_ShiftALeft;
@@ -317,11 +330,13 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                         when others =>
                             AluFunc <= "XXXX";
                             SelPC <= 'X';
                             SelLoad <= 'X';
                             instrTerminate <= '1';
+                            ClkEnPC <= '0';
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
