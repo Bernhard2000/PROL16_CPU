@@ -97,7 +97,7 @@ begin
            cyc := Cycle_3;
           report "Reset";
          end if;
-        if rising_edge(ZuluClk) then --TODO mit variablen
+        if falling_edge(ZuluClk) then --trigger cycle on falling edge so OpCodeReg is ready
                     if instrTerminate = '1' then
                         --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
                                                     cyc := Cycle_1;
@@ -173,9 +173,12 @@ begin
                     report "OPCODE_STORE";
                 end if;
                 
-                if RegOpcode = OP_JUMP then
-                                        report "OPCODE_JUMP";
-
+                if opCode = OP_JUMP then
+                    report "JUMP";
+                    selPC_var := '0';
+                    clkEnPC_var := '1';
+                    selLoad_var := 'X';
+                    aluFunc_var := "XXXX";
                 end if;
                                                         
             when Cycle_2 =>
@@ -217,9 +220,8 @@ begin
                             clkEnPC_var := '0';
                             selPC_var := 'X';
                         when OP_JUMP =>
-                            report "JUMP";
-                            selPC_var := '0';
-                            clkEnPC_var := '1';
+                            selPC_var := 'X';
+                            clkEnPC_var := '0';
                             selLoad_var := 'X';
                             aluFunc_var := "XXXX";
                         when OP_JUMPC =>
