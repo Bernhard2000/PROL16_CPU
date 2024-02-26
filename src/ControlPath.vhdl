@@ -298,14 +298,14 @@ case RegOpcode is
                         when OP_ADDC => 
                             report "ADDC";
                             aluFunc_var := ALU_AplusBplusCarry;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SUB => 
                             report "SUB";
                             aluFunc_var := ALU_AminusBminusCarry;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '0';
                             selLoad_var := '0';
@@ -313,14 +313,14 @@ case RegOpcode is
                         when OP_SUBC => 
                             report "SUBC";
                             aluFunc_var := ALU_AminusBminusCarry;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             clkEnPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                         when OP_COMP => 
                             report "COMP";
                             aluFunc_var := ALU_AminusBminusCarry;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '1';
                             clkEnRegFile_var := '1';
@@ -334,14 +334,14 @@ case RegOpcode is
                         when OP_DEC =>
                             report "DEC";
                             aluFunc_var := ALU_A_DEC;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SHL => 
                             report "SHL";
                             ALUFunc <= ALU_ShiftALeft;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
@@ -349,7 +349,7 @@ case RegOpcode is
                         when OP_SHR =>
                             report "SHR";
                             ALUFunc <= ALU_ShiftARight;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
@@ -357,14 +357,14 @@ case RegOpcode is
                         when OP_SHRC => 
                             report "SHRC";
                             ALUFunc <= ALU_ShiftARight;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SHLC => 
                             report "SHLC";
                             ALUFunc <= ALU_ShiftALeft;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
