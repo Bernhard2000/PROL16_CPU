@@ -18,7 +18,8 @@ entity CPU is
     Reset : in std_ulogic;
     ClkEnPC : out std_ulogic;
     ZuluClk : in std_ulogic;
-    RegOpCode : out OpcodeVec);
+    RegOpCode : out OpcodeVec;
+    ClkEnRegFile : out std_ulogic);
 end CPU;
 
 architecture Behavioral of CPU is    
@@ -144,6 +145,7 @@ begin
     RegOpCode <= RegOpcode_sig;
     ClkEnOpcode <= ClkEnOpcode_sig;
     ClkEnPC <= ClkEnPC_sig;
+        ClkEnRegFile <= ClkEnRegFile_sig;
         
     MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);

@@ -171,6 +171,7 @@ begin
                 when '1' => regFileInVar := MemRdData;
                 when others => regFileInVar := (others => 'X');
             end case;
+            report "ReadData: " &integer'image(to_integer(unsigned(regFileInVar)));
         end if;
         RegFileIn <= regFileInVar;
     end process;

@@ -1,0 +1,126 @@
+# Loading project PROL16_CPU
+vsim work.cpu_tb
+# vsim work.cpu_tb 
+# Start time: 22:40:48 on Feb 25,2024
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.prol16_package
+# Loading work.cpu_tb(cpu_tb_behav)
+# Loading ieee.std_logic_arith(body)
+# Loading work.mem_pack(body)
+# Loading work.memory(beh)
+# Loading work.memory_impl(memory_arch)
+# Loading work.cpu(behavioral)
+# Loading work.datapath(behavioral)
+# ** Warning: (vsim-3473) Component instance "registerfile_instance : RegisterFile" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/cpu_inst/dataPath_instance File: /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl
+# Loading work.alu(behavioral)
+# ** Warning: (vsim-3473) Component instance "shiftLeft_comp : Shiftleft" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance File: /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl
+# ** Warning: (vsim-3473) Component instance "shiftRight_comp : Shiftright" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance File: /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl
+# Loading work.adddatavec(adder)
+# Loading work.controlpath(behavioral)
+# ** Warning: (vsim-8683) Uninitialized out port /cpu_tb/cpu_inst/LegalOpcodePresent has no driver.
+# This port will contribute value (U) to the signal network.
+add wave -position end  sim:/cpu_tb/ZuluClk
+add wave -position end  sim:/cpu_tb/mem_ce_ni_s
+add wave -position end  sim:/cpu_tb/mem_oe_ni_s
+add wave -position end  sim:/cpu_tb/mem_we_ni_s
+add wave -position end  sim:/cpu_tb/mem_addr_i_s
+add wave -position end  sim:/cpu_tb/mem_dat_io_s
+add wave -position end  sim:/cpu_tb/ClkEnOpcode_s
+add wave -position end  sim:/cpu_tb/LegalOpcodePresent_s
+add wave -position end  sim:/cpu_tb/Reset_s
+add wave -position end  sim:/cpu_tb/ClkEnPC
+add wave -position end  sim:/cpu_tb/RegOpCode
+run
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# 
+#  Assembling 0027 lines complete, code & data size 00016 words
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 0 ps  Iteration: 1  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# ** Note: Cycle 1: Increment PC
+#    Time: 100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 1
+#    Time: 100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: New clock cycle: 2
+#    Time: 100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Cycle 2, Instr: Opcode: 0
+#    Time: 300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 2
+#    Time: 300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Terminated, New clock cycle: 1
+#    Time: 300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: NOP
+#    Time: 300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 300 ns  Iteration: 2  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# ** Note: Cycle 1: Increment PC
+#    Time: 500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 1
+#    Time: 500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: New clock cycle: 2
+#    Time: 500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Cycle 2, Instr: Opcode: 0
+#    Time: 700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 2
+#    Time: 700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Terminated, New clock cycle: 1
+#    Time: 700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: NOP
+#    Time: 700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 700 ns  Iteration: 2  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# ** Note: Cycle 1: Increment PC
+#    Time: 900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 1
+#    Time: 900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: New clock cycle: 2
+#    Time: 900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+run
+# ** Note: Cycle 2, Instr: Opcode: 0
+#    Time: 1100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 2
+#    Time: 1100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Terminated, New clock cycle: 1
+#    Time: 1100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: NOP
+#    Time: 1100 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 1100 ns  Iteration: 2  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# ** Note: Cycle 1: Increment PC
+#    Time: 1300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 1
+#    Time: 1300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: New clock cycle: 2
+#    Time: 1300 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Cycle 2, Instr: Opcode: 0
+#    Time: 1500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 2
+#    Time: 1500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Terminated, New clock cycle: 1
+#    Time: 1500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: NOP
+#    Time: 1500 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 1500 ns  Iteration: 2  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
+# ** Note: Cycle 1: Increment PC
+#    Time: 1700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 1
+#    Time: 1700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: New clock cycle: 2
+#    Time: 1700 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Cycle 2, Instr: Opcode: 0
+#    Time: 1900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Old cycle: 2
+#    Time: 1900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: Terminated, New clock cycle: 1
+#    Time: 1900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Note: NOP
+#    Time: 1900 ns  Iteration: 0  Instance: /cpu_tb/cpu_inst/controlPath_instance
+# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
+#    Time: 1900 ns  Iteration: 2  Instance: /cpu_tb/cpu_inst/dataPath_instance/alu_instance
