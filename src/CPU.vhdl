@@ -20,7 +20,8 @@ entity CPU is
     ZuluClk : in std_ulogic;
     RegOpCode : out OpcodeVec;
     ClkEnRegFile : out std_ulogic;
-    SelLoad : out std_ulogic
+    SelLoad : out std_ulogic;
+    ZeroOut : out std_ulogic
     );
 end CPU;
 
@@ -88,6 +89,7 @@ architecture Behavioral of CPU is
              SelAddr         : out std_ulogic;
              SelPC           : out std_ulogic;
              ALU_CarryIn     : out std_ulogic;
+             LegalOpcodePresent : out std_ulogic;
      
               ---------------------------------- [ ALU ] ------------------------
               ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU        
@@ -139,6 +141,7 @@ begin
         SelPC => SelPC_sig, -- selectInput of SelPC-MUX
         SelLoad => SelLoad_sig, -- selectInput of SelLoad-MUX
         SelAddr => SelAddr_sig, -- selectInput of SelAddr-MUX
+        LegalOpcodePresent => LegalOpcodePresent,
           
         ALU_CarryIn => CarryIn_sig, -- connects to carryIn input of ALU         
         ALUFunc => ALUFunc -- selects the function
@@ -149,6 +152,7 @@ begin
     ClkEnPC <= ClkEnPC_sig;
         ClkEnRegFile <= ClkEnRegFile_sig;
         SelLoad <= SelLoad_sig;
+        ZeroOut <= ZeroOut_sig;
         
     MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);

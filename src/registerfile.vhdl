@@ -28,7 +28,6 @@ begin
    begin
         if Reset = ResetActive then
             Registers <= (others => (others => '0')); 
-
         elsif rising_Edge(Clk) then           
             --Have to use this abomination to implement writing to the RegFile for the Elaborated Design to make sense.
             for i in Registers'range loop

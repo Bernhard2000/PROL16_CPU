@@ -27,6 +27,7 @@ entity ControlPath is
         SelAddr         : out std_ulogic;
         SelPC           : out std_ulogic;
         ALU_CarryIn     : out std_ulogic;
+        LegalOpcodePresent : out std_ulogic;
 
          ---------------------------------- [ ALU ] ------------------------
          ALUFunc : out std_ulogic_vector(3 downto 0) -- selects the function of the ALU        
@@ -50,9 +51,7 @@ architecture Behavioral of ControlPath is
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
-    signal instrTerminate : std_ulogic := '0';
-    
-    
+    signal instrTerminate : std_ulogic := '0';      
     
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
         variable result : OpcodeValueType;
@@ -90,12 +89,12 @@ begin
         SelPC <= SelPC_sig;
         ALU_CarryIn <= ALU_CarryIn_sig;
         
-    clockCycle: process(ZuluClk, Reset, instrTerminate) is
-    variable cyc : std_ulogic_vector(2 downto 0) := Cycle_1;
+    clockCycle: process(ZuluClk, Reset) is
+    variable cyc : std_ulogic_vector(2 downto 0) := Cycle_3;
     begin
 
          if Reset = '1' then
-           cyc := Cycle_1;
+           cyc := Cycle_3;
           report "Reset";
          end if;
         if rising_edge(ZuluClk) then --TODO mit variablen
@@ -108,21 +107,18 @@ begin
                         cyc := cyc(1 downto 0) & cyc(2);
                         --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
                         
-                        end if;
-                                
-             
+                        end if;                                       
       end if;
 
-                     --cycle <= cyc;
+                     cycle <= cyc;
            
     end process clockCycle;
     
-    readWriteFlag: process(ZuluClk, cycle) is
+    readWriteFlag: process(cycle) is
     variable rd : std_ulogic := '1';
     variable wr : std_ulogic := '0';
     begin
         
-        if rising_edge(ZuluClk) then
             case cycle is
                 when Cycle_1 =>
                     rd := '0';
@@ -145,10 +141,9 @@ begin
             end case;
             MemWrStrobe <= wr;
             MemRdStrobe <= rd;
-        end if;
     end process readWriteFlag;
 
-    readOpCode: process(ZuluClk, Reset) is
+    readOpCode: process(cycle) is
         variable opCode : OpcodeVec;
         variable stop : std_ulogic := '1';
         variable clkEnPC_var : std_ulogic := '0';
@@ -158,11 +153,8 @@ begin
         variable selLoad_var : std_ulogic := '0';
         variable clkEnRegFile_var : std_ulogic := '0';
         variable alu_CarryIn_var : std_ulogic := '0';
-    begin
-           
-           
-
-       if rising_edge(ZuluClk) then   
+        variable legalOpCode : std_ulogic := '1';
+    begin                
         case cycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1: Increment PC";
@@ -175,11 +167,15 @@ begin
                 clkEnRegFile_var := '0';
                 aluFunc_var := ALU_A_INC;
                 opCode := RegOpcode;
-                cycle <= clock_cycle(cycle, stop);
                 
                 if opCode = OP_STORE then
                     selAddr_var := '1';
                     report "OPCODE_STORE";
+                end if;
+                
+                if RegOpcode = OP_JUMP then
+                                        report "OPCODE_JUMP";
+
                 end if;
                                                         
             when Cycle_2 =>
@@ -189,9 +185,7 @@ begin
                                     when others =>
                                         stop := '1';
                                     end case;           
-                                    
-                    cycle <= clock_cycle(cycle, stop);
-     
+                                         
                     case RegOpcode is 
                         when OP_LOADI =>
                             report "LOADI";
@@ -383,10 +377,10 @@ begin
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
+                            legalOpCode := '0';
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
-                            cycle <= clock_cycle(cycle, instrTerminate);
                 --ClkEnOpcode <= '1';
                 stop := '1';
                 selAddr_var := '0';
@@ -411,9 +405,11 @@ begin
                         aluFunc_var := "XXXX";
                         selPC_var := 'X';
                         selLoad_var := 'X';
+                        legalOpCode := '0';
                 end case;
             when others => 
-                ALUFunc <= "XXXX";      
+                ALUFunc <= "XXXX";  
+                legalOpCode := '0';    
         end case;      
                   instrTerminate <= stop;
                   ClkEnOpCode_sig <= stop;
@@ -424,8 +420,7 @@ begin
                   SelLoad_sig <= selLoad_var;
                   ClkEnRegFile_sig <= clkEnRegFile_var;
                   ALU_CarryIn_sig <= alu_CarryIn_var;  
-    end if;
-
+                  LegalOpcodePresent <= legalOpCode;
                 
     end process readOpCode;
 end Behavioral;

@@ -133,7 +133,7 @@ begin
         if Reset = ResetActive then
             report "Reset PC";
             RegPC <= (others => '0');
-        elsif ZuluClk'event and ZuluClk='1' then
+        elsif rising_edge(ZuluCLK) then
             if ClkEnPC = '1' then
                 case SelPC is
                     when '0' => RegPC <= RaValue;
@@ -148,9 +148,9 @@ begin
     begin
         if Reset = ResetActive then
             RegTmpRa <= (others => '0');
-        elsif ZuluClk'event and ZuluClk='1' then
+        elsif rising_edge(ZuluCLK) then
             RegTmpRa <= RaValue;
-                            report "RegTmpRa: " &integer'image(to_integer(unsigned(RaValue)));
+                            report "RaValue: " &integer'image(to_integer(unsigned(RaValue)));
         end if;
     end process;
 
@@ -161,7 +161,7 @@ begin
             elsif rising_edge(ZuluClk) then
                 RegTmpRb <= RbValue;
                 report "RegTmpRb: " &integer'image(to_integer(unsigned(RbValue)));
-                                    report "SelAddr: " &std_logic'image(SelAddr);
+                                    --report "SelAddr: " &std_logic'image(SelAddr);
             end if;
     end process;
     
@@ -170,7 +170,7 @@ begin
 
                 
 
-    writeOpcode : process(ZuluClk, Reset) is
+    writeOpcode : process(ZuluClk, Reset, ClkEnOpcode) is
     variable opcodeValue : OpcodeValueType;
     begin
         if Reset = ResetActive then
@@ -179,7 +179,6 @@ begin
             RegSelRb <= (others => '0');
         elsif rising_edge(ZuluClk) then
                 --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
-
             if ClkEnOpcode = '1' then
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
                 RegOpcode_sig <= opcodeValue.Code;

@@ -31,7 +31,8 @@ component memory
         ZuluClk : in std_ulogic;
         RegOpCode : out OpcodeVec;
         ClkEnRegfile : out std_ulogic;
-            SelLoad : out std_ulogic
+            SelLoad : out std_ulogic;
+            ZeroOut : out std_ulogic
     );
 end component; 
   
@@ -50,6 +51,7 @@ end component;
     signal ClkEnPC : std_ulogic;
     signal RegOpCode : OpcodeVec;
     signal SelLoad : std_ulogic;
+    signal ZeroOut : std_ulogic;
     
 begin
 
@@ -77,6 +79,7 @@ begin
       ClkEnPC => ClkEnPC,
       RegOpCode => RegOpCode,
       ClkEnRegfile => ClkEnRegfile,
-      SelLoad => SelLoad
+      SelLoad => SelLoad,
+      ZeroOut => ZeroOut
       ); 
 end CPU_TB_behav;
