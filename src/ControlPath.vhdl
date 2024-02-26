@@ -48,7 +48,8 @@ architecture Behavioral of ControlPath is
 
  
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
-    signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic := '0';
+    signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
+    signal ClkEnOpcode_sig : std_ulogic := '1';
     signal instrTerminate : std_ulogic := '0';
     
     
@@ -82,8 +83,13 @@ architecture Behavioral of ControlPath is
       end function;
 begin
         SelAddr <= SelAddr_sig;
-
-
+        ClkEnPC <= ClkEnPC_sig;
+        ClkEnRegFile <= ClkEnRegFile_sig;
+        SelLoad <= SelLoad_sig;
+        ClkEnOpcode <= ClkEnOpcode_sig;
+        SelPC <= SelPC_sig;
+        ALU_CarryIn <= ALU_CarryIn_sig;
+        
     clockCycle: process(ZuluClk, Reset, instrTerminate) is
     variable cyc : std_ulogic_vector(2 downto 0) := Cycle_1;
     begin
@@ -106,6 +112,7 @@ begin
                                 
              
       end if;
+
                      --cycle <= cyc;
            
     end process clockCycle;
@@ -122,7 +129,6 @@ begin
                     wr := '0';
                 when Cycle_2 =>
                     if RegOpCode =  OP_STORE then
-                        report "STORE";
                         wr := '1';
                         rd := '0';
                      else
@@ -148,14 +154,13 @@ begin
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
         variable aluFunc_var : std_ulogic_vector(3 downto 0) := ALU_DONT_CARE;
-        variable selAddr_var : std_ulogic := '0';
+        variable selAddr_var : std_ulogic := '1';
         variable selLoad_var : std_ulogic := '0';
         variable clkEnRegFile_var : std_ulogic := '0';
         variable alu_CarryIn_var : std_ulogic := '0';
     begin
            
            
-       report "RegOpcode: " &integer'image(to_integer(unsigned(RegOpcode))); 
 
        if rising_edge(ZuluClk) then   
         case cycle is
@@ -169,17 +174,23 @@ begin
                 selLoad_var := 'X';
                 clkEnRegFile_var := '0';
                 aluFunc_var := ALU_A_INC;
+                opCode := RegOpcode;
                 cycle <= clock_cycle(cycle, stop);
+                
+                if opCode = OP_STORE then
+                    selAddr_var := '1';
+                    report "OPCODE_STORE";
+                end if;
+                                                        
             when Cycle_2 =>
                     case RegOpcode is 
                                     when OP_LOADI | OP_LOAD | OP_STORE =>
                                         stop := '0';
                                     when others =>
-                                        selAddr_var := '0';
                                         stop := '1';
                                     end case;           
                                     
-                                                                cycle <= clock_cycle(cycle, stop);
+                    cycle <= clock_cycle(cycle, stop);
      
                     case RegOpcode is 
                         when OP_LOADI =>
@@ -404,15 +415,15 @@ begin
             when others => 
                 ALUFunc <= "XXXX";      
         end case;      
-                    instrTerminate <= stop;
-                  ClkEnOpCode <= stop;
-                  ClkEnPC <= clkEnPC_var;
-                  SelPC <= selPC_var;
+                  instrTerminate <= stop;
+                  ClkEnOpCode_sig <= stop;
+                  ClkEnPC_sig <= clkEnPC_var;
+                  SelPC_sig <= selPC_var;
                   AluFunc <= aluFunc_var;
                   SelAddr_sig <= selAddr_var;
-                  SelLoad <= selLoad_var;
-                  ClkEnRegFile <= clkEnRegFile_var;
-                  ALU_CarryIn <= alu_CarryIn_var;  
+                  SelLoad_sig <= selLoad_var;
+                  ClkEnRegFile_sig <= clkEnRegFile_var;
+                  ALU_CarryIn_sig <= alu_CarryIn_var;  
     end if;
 
                 

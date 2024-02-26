@@ -150,6 +150,7 @@ begin
             RegTmpRa <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
             RegTmpRa <= RaValue;
+                            report "RegTmpRa: " &integer'image(to_integer(unsigned(RaValue)));
         end if;
     end process;
 
@@ -157,8 +158,10 @@ begin
         begin
             if Reset = ResetActive then
                 RegTmpRb <= (others => '0');
-            elsif ZuluClk'event and ZuluClk='1' then
+            elsif rising_edge(ZuluClk) then
                 RegTmpRb <= RbValue;
+                report "RegTmpRb: " &integer'image(to_integer(unsigned(RbValue)));
+                                    report "SelAddr: " &std_logic'image(SelAddr);
             end if;
     end process;
     
@@ -174,7 +177,7 @@ begin
             RegOpcode_sig <= (others => '0');
             RegSelRa <= (others => '0');
             RegSelRb <= (others => '0');
-        elsif ZuluClk'event and ZuluClk='1' then
+        elsif rising_edge(ZuluClk) then
                 --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
 
             if ClkEnOpcode = '1' then
@@ -182,13 +185,14 @@ begin
                 RegOpcode_sig <= opcodeValue.Code;
                 RegSelRa <= opcodeValue.Ra;
                 RegSelRb <= opcodeValue.Rb;
-                report "DataPath: Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
+                report "DataPath: Ra: "&integer'image(to_integer(unsigned(opcodeValue.Ra))) & "Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
             end if;
         end if;
     end process;
        
 
     With SelAddr select MemAddr <= RegPC when '0', RegTmpRb when '1', (others => 'X') when others;
+ 
     AluSideA <= RegTmpRa when SelPC = '0' else RegPC;
     MemWrData <= RegTmpRa;
     RegOpcode <= RegOpcode_sig;

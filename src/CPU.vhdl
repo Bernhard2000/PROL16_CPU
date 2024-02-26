@@ -42,7 +42,7 @@ architecture Behavioral of CPU is
     
     signal MemRdStrobe : std_ulogic := '1';
     signal MemWrStrobe : std_ulogic := '0';
-    signal memCE_sig, memOE_sig, memWE_sig : std_ulogic;
+    signal memCE_sig, memOE_sig, memWE_sig : std_ulogic := '0';
     
     component DataPath is
             port (
@@ -159,20 +159,33 @@ begin
     MemWE <= memWE_sig;
     
 
-MemorySignals: process (ZuluCLK)
-begin
-    if MemRdStrobe = '1' then
-        memCE_sig <= '0';
-        memOE_sig <= '0';
-        memWE_sig <= '1';
-    elsif MemWrStrobe = '1' then
-        memCE_sig <= '0';
-        memOE_sig <= '1';
-        memWE_sig <= '0';
-    else 
-        memCE_sig <= '1';
-        memOE_sig <= '1';
-        memWE_sig <= '1';
-    end if;
-end process;
+    With MemRdStrobe select
+        memOE_sig <= '0' when '1',
+                     '1' when '0',
+                     'X' when others;
+                     
+    With MemWrStrobe select
+         memWE_sig <= '0' when '1',
+         '1' when '0',
+                              'X' when others;
+                
+                     
+--MemorySignals: process (ZuluCLK)
+--begin
+--    if rising_edge(ZuluCLK) then
+ --   if MemRdStrobe = '1' then
+  --      memCE_sig <= '0';
+  --      memOE_sig <= '0';
+  --      memWE_sig <= '1';
+  --  elsif MemWrStrobe = '1' then
+  --      memCE_sig <= '0';
+  --      memOE_sig <= '1';
+  --      memWE_sig <= '0';
+  --  else 
+  --      memCE_sig <= '1';
+  --      memOE_sig <= '1';
+  --      memWE_sig <= '1';
+  --  end if;
+  --  end if;
+--end process;
 end Behavioral;
