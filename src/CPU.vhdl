@@ -150,13 +150,13 @@ begin
         ClkEnRegFile <= ClkEnRegFile_sig;
         SelLoad <= SelLoad_sig;
         
-    MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
+    MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);
     
 
-    MemCE <= memCE_sig;
-    MemOE <= memOE_sig;
-    MemWE <= memWE_sig;
+    MemCE <= not (MemRdStrobe or MemWrStrobe);
+    MemOE <= not MemRdStrobe;
+    MemWE <= not MemWrStrobe;
     
 
     With MemRdStrobe select
