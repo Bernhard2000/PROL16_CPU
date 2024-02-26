@@ -28,7 +28,8 @@ component memory
         LegalOpcodePresent : out std_ulogic;
         Reset : in std_ulogic;
         ClkEnPC : out std_ulogic;
-        ZuluClk : in std_ulogic
+        ZuluClk : in std_ulogic;
+        RegOpCode : out OpcodeVec
     );
 end component; 
   
@@ -44,9 +45,8 @@ end component;
     signal Reset_s : std_ulogic := '0';
     
     signal ClkEnPC : std_ulogic;
+    signal RegOpCode : OpcodeVec;
     
-        signal mem_ctr : std_ulogic := '0';
-
 begin
 
   ZuluClk <= not ZuluClk after 100ns;
@@ -70,6 +70,7 @@ begin
       LegalOpcodePresent => LegalOpcodePresent_s,
       Reset => Reset_s,
       ZuluClk => ZuluClk,
-      ClkEnPC => ClkEnPC
+      ClkEnPC => ClkEnPC,
+      RegOpCode => RegOpCode
       ); 
 end CPU_TB_behav;
