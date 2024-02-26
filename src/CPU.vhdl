@@ -21,7 +21,8 @@ entity CPU is
     RegOpCode : out OpcodeVec;
     ClkEnRegFile : out std_ulogic;
     SelLoad : out std_ulogic;
-    ZeroOut : out std_ulogic
+    ZeroOut : out std_ulogic;
+    SelAddr : out std_ulogic
     );
 end CPU;
 
@@ -153,6 +154,7 @@ begin
         ClkEnRegFile <= ClkEnRegFile_sig;
         SelLoad <= SelLoad_sig;
         ZeroOut <= ZeroOut_sig;
+        SelAddr <= SelAddr_sig;
         
     MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);

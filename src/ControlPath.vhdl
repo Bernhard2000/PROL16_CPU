@@ -89,7 +89,7 @@ begin
         SelPC <= SelPC_sig;
         ALU_CarryIn <= ALU_CarryIn_sig;
         
-    clockCycle: process(ZuluClk, Reset) is
+    clockCycle: process(ZuluCLK, RegOpcode, Reset) is
     variable cyc : std_ulogic_vector(2 downto 0) := Cycle_3;
     begin
 
@@ -143,8 +143,7 @@ begin
             MemRdStrobe <= rd;
     end process readWriteFlag;
 
-    readOpCode: process(cycle) is
-        variable opCode : OpcodeVec;
+    readOpCode: process(cycle, RegOpCode) is
         variable stop : std_ulogic := '1';
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
@@ -157,31 +156,63 @@ begin
     begin                
         case cycle is
             when Cycle_1 => --increment PC
-                report "Cycle 1: Increment PC";
                 stop := '0';
-                clkEnPC_var := '1';
-                selPC_var := '1';
-                alu_CarryIn_var := '0';
-                selAddr_var := '0';
-                selLoad_var := 'X';
-                clkEnRegFile_var := '0';
-                aluFunc_var := ALU_A_INC;
-                opCode := RegOpcode;
-                
-                if opCode = OP_STORE then
-                    selAddr_var := '1';
-                    report "OPCODE_STORE";
-                end if;
-                
-                if RegOpcode = OP_JUMP then
-                    selPC_var := '0';
-                                            clkEnPC_var := '1';
-                                            selLoad_var := 'X';
-                                            aluFunc_var := "XXXX";
-                                        report "JUMP";
 
-                end if;
-                                                        
+                                                        alu_CarryIn_var := '0';
+                                                        clkEnRegFile_var := '0';
+                case RegOpCode is
+                    when OP_JUMP => 
+                         report "JUMP";
+                         selPC_var := '0';
+                         clkEnPC_var := '1';
+                         selLoad_var := 'X';
+                         aluFunc_var := "XXXX";
+                    when OP_JUMPZ => 
+                        report "JUMPZ";
+                        if ALU_ZeroOut = '1' then
+                            report "DO JUMP";
+                            selPC_var := '0';
+                            clkEnPC_var := '1';
+                            selLoad_var := 'X';
+                            aluFunc_var := "XXXX";
+                        else
+                            clkEnPC_var := '1';
+                            selPC_var := '1';
+                            alu_CarryIn_var := '0';
+                            selAddr_var := '0';
+                            selLoad_var := 'X';
+                            clkEnRegFile_var := '0';
+                            aluFunc_var := ALU_A_INC;
+                        end if;
+                    when OP_JUMPC =>
+                        report "JUMPC";
+                        if ALU_CarryOut = '1' then
+                            selPC_var := '0';
+                            clkEnPC_var := '1';
+                            selLoad_var := 'X';
+                            aluFunc_var := "XXXX";
+                        else
+                                        report "Cycle 1: Increment PC";
+
+                            clkEnPC_var := '1';
+                            selPC_var := '1';
+                            alu_CarryIn_var := '0';
+                            selAddr_var := '0';
+                            selLoad_var := 'X';
+                            clkEnRegFile_var := '0';
+                            aluFunc_var := ALU_A_INC;
+                        end if; 
+                    when others =>
+                        clkEnPC_var := '1';
+                        selPC_var := '1';
+                        selLoad_var := 'X';
+                        aluFunc_var := ALU_A_INC;
+                end case;                              
+                
+                if RegOpcode =  OP_STORE then
+                    report "STORE_SIGNAL_EARLY";
+                end if;                   
+                               
             when Cycle_2 =>
                     case RegOpcode is 
                                     when OP_LOADI | OP_LOAD | OP_STORE =>
@@ -221,37 +252,20 @@ begin
                             clkEnPC_var := '0';
                             selPC_var := 'X';
                         when OP_JUMP =>
-                            report "JUMP";
-                            selPC_var := 'X';
-                            clkEnPC_var := '0';
-                            selLoad_var := 'X';
                             aluFunc_var := "XXXX";
+                            selPC_var := 'X';
+                            selLoad_var := 'X';
+                            clkEnPC_var := '0';
                         when OP_JUMPC =>
-                            report "JUMPC";
-                            if ALU_CarryOut = '1' then
-                                selPC_var := '0';
-                                clkEnPC_var := '1';
-                                selLoad_var := 'X';
-                                aluFunc_var := "XXXX";
-                            else
-                                selPC_var := 'X';
-                                clkEnPC_var := '0';
-                                selLoad_var := 'X';
-                                aluFunc_var := "XXXX";
-                            end if;
+                            aluFunc_var := "XXXX";
+                            selPC_var := 'X';
+                            selLoad_var := 'X';
+                            clkEnPC_var := '0';
                         when OP_JUMPZ =>
-                            report "JUMPZ";
-                            if ALU_ZeroOut = '1' then
-                                selPC_var := '0';
-                                clkEnPC_var := '1';
-                                selLoad_var := 'X';
-                                aluFunc_var := "XXXX";
-                            else
-                                selPC_var := 'X';
-                                clkEnPC_var := '0';
-                                selLoad_var := 'X';
-                                aluFunc_var := "XXXX";
-                            end if;
+                            aluFunc_var := "XXXX";
+                            selPC_var := 'X';
+                            selLoad_var := 'X';
+                            clkEnPC_var := '0';
                         when OP_MOVE =>
                         report "MOVE";
                             aluFunc_var := ALU_SideB;
