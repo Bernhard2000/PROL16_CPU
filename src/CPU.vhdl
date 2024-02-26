@@ -93,7 +93,6 @@ architecture Behavioral of CPU is
      end component;
 
 begin
-    ClkEnPC <= ClkEnPC_sig;
 --TODO implementation
     dataPath_instance : DataPath
     port map(
@@ -131,7 +130,7 @@ begin
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
         
-        ClkEnOpcode => ClkEnOpcode,
+        ClkEnOpcode => ClkEnOpcode_sig,
         ClkEnPC => ClkEnPC_sig,
         ClkEnRegFile => ClkEnRegFile_sig,
         SelPC => SelPC_sig, -- selectInput of SelPC-MUX
@@ -143,7 +142,9 @@ begin
     );
 
     RegOpCode <= RegOpcode_sig;
-
+    ClkEnOpcode <= ClkEnOpcode_sig;
+    ClkEnPC <= ClkEnPC_sig;
+        
     MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);
     
