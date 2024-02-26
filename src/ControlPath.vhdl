@@ -48,8 +48,9 @@ architecture Behavioral of ControlPath is
 
  
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
-    signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
+    signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic := '0';
     signal instrTerminate : std_ulogic := '0';
+    
     
     
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
@@ -80,6 +81,8 @@ architecture Behavioral of ControlPath is
               return cyc;
       end function;
 begin
+        SelAddr <= SelAddr_sig;
+
 
     clockCycle: process(ZuluClk, Reset, instrTerminate) is
     variable cyc : std_ulogic_vector(2 downto 0) := Cycle_1;
@@ -111,8 +114,7 @@ begin
     variable rd : std_ulogic := '1';
     variable wr : std_ulogic := '0';
     begin
-        MemWrStrobe <= wr;
-        MemRdStrobe <= rd;
+        
         if rising_edge(ZuluClk) then
             case cycle is
                 when Cycle_1 =>
@@ -135,10 +137,12 @@ begin
                     wr := '0';
                     rd := '1';
             end case;
+            MemWrStrobe <= wr;
+            MemRdStrobe <= rd;
         end if;
     end process readWriteFlag;
 
-    readOpCode: process(ZuluClk, Reset, RegOpcode) is
+    readOpCode: process(ZuluClk, Reset) is
         variable opCode : OpcodeVec;
         variable stop : std_ulogic := '1';
         variable clkEnPC_var : std_ulogic := '0';
@@ -149,16 +153,11 @@ begin
         variable clkEnRegFile_var : std_ulogic := '0';
         variable alu_CarryIn_var : std_ulogic := '0';
     begin
-            instrTerminate <= stop;
-            ClkEnOpCode <= stop;
-            ClkEnPC <= clkEnPC_var;
-            SelPC <= selPC_var;
-            AluFunc <= aluFunc_var;
-            SelAddr <= selAddr_var;
-            SelLoad <= selLoad_var;
-            ClkEnRegFile <= clkEnRegFile_var;
-            ALU_CarryIn <= alu_CarryIn_var;
-       if rising_edge(ZuluClk) then
+           
+           
+       report "RegOpcode: " &integer'image(to_integer(unsigned(RegOpcode))); 
+
+       if rising_edge(ZuluClk) then   
         case cycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1: Increment PC";
@@ -172,7 +171,7 @@ begin
                 aluFunc_var := ALU_A_INC;
                 cycle <= clock_cycle(cycle, stop);
             when Cycle_2 =>
-case RegOpcode is 
+                    case RegOpcode is 
                                     when OP_LOADI | OP_LOAD | OP_STORE =>
                                         stop := '0';
                                     when others =>
@@ -404,7 +403,16 @@ case RegOpcode is
                 end case;
             when others => 
                 ALUFunc <= "XXXX";      
-        end case;        
+        end case;      
+                    instrTerminate <= stop;
+                  ClkEnOpCode <= stop;
+                  ClkEnPC <= clkEnPC_var;
+                  SelPC <= selPC_var;
+                  AluFunc <= aluFunc_var;
+                  SelAddr_sig <= selAddr_var;
+                  SelLoad <= selLoad_var;
+                  ClkEnRegFile <= clkEnRegFile_var;
+                  ALU_CarryIn <= alu_CarryIn_var;  
     end if;
 
                 
