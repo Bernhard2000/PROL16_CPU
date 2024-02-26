@@ -127,6 +127,7 @@ begin
     
     process_ZeroOut : process(aluResult_Sig)
     begin
+        report "ALUResult: " &integer'image(to_integer(unsigned(aluResult_Sig))) & "Func: " &integer'image(to_integer(unsigned(FuncControl))) & "SideA: " &integer'image(to_integer(unsigned(SideA)));
         if unsigned(aluResult_Sig) = 0 then
             ZeroOut <= '1';
         else 

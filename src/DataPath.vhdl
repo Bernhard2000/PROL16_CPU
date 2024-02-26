@@ -80,10 +80,7 @@ end component;
 function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
       variable result : OpcodeValueType;
     begin
-        report "data_vector: " &integer'image(to_integer(unsigned(data_vector)));
       result.Code := data_vector(DataVec_length - 1 downto DataVec_length - OpcodeBits); --5-0
-              report "Code: " &integer'image(to_integer(unsigned(result.Code)));
-
       result.Ra := data_vector(2*RegFileBits - 1 downto RegFileBits); --10-6
       result.Rb := data_vector(RegFileBits - 1 downto 0); --15-11
       result.Imm := data_vector(DataVec_length-1 downto 0);
@@ -101,6 +98,13 @@ signal RegSelRb : std_ulogic_vector(RegFileBits-1 downto 0);
 signal RegOpcode_sig : OpcodeVec := (others => '0');
 
 begin
+
+    with SelLoad select
+                RegFileIn <= AluResult when '0',
+                             MemRdData when '1',
+                             (others => 'X') when others;
+          
+
     registerfile_instance : RegisterFile
     port map (
         RegFileIn => RegFileIn,
@@ -160,21 +164,8 @@ begin
     
 
 
-    readData : process(ZuluClk, Reset) is
-    Variable regFileInVar : DataVec;
-    begin
-        if Reset = ResetActive then
-            regFileInVar := (others => '0');
-        elsif ZuluClk'event and ZuluClk='1' then
-                case SelLoad is
-                when '0' => regFileInVar := AluResult;
-                when '1' => regFileInVar := MemRdData;
-                when others => regFileInVar := (others => 'X');
-            end case;
-            report "ReadData: " &integer'image(to_integer(unsigned(regFileInVar)));
-        end if;
-        RegFileIn <= regFileInVar;
-    end process;
+
+                
 
     writeOpcode : process(ZuluClk, Reset) is
     variable opcodeValue : OpcodeValueType;
@@ -184,14 +175,14 @@ begin
             RegSelRa <= (others => '0');
             RegSelRb <= (others => '0');
         elsif ZuluClk'event and ZuluClk='1' then
-                report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
+                --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
 
             if ClkEnOpcode = '1' then
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
                 RegOpcode_sig <= opcodeValue.Code;
                 RegSelRa <= opcodeValue.Ra;
                 RegSelRb <= opcodeValue.Rb;
-                report "DataPath: opcodeValue: " &integer'image(to_integer(unsigned(opcodeValue.Code)));
+                report "DataPath: Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
             end if;
         end if;
     end process;

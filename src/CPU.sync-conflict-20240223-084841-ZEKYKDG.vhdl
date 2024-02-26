@@ -1,6 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use IEEE.NUMERIC_STD.all;
 
 library work;
 use work.prol16_package.all;
@@ -16,12 +15,7 @@ entity CPU is
     ClkEnOpcode : out std_ulogic;
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
-    ClkEnPC : out std_ulogic;
-    ZuluClk : in std_ulogic;
-    RegOpCode : out OpcodeVec;
-    ClkEnRegFile : out std_ulogic;
-    SelLoad : out std_ulogic
-    );
+    ZuluClk : in std_ulogic);
 end CPU;
 
 architecture Behavioral of CPU is    
@@ -40,9 +34,7 @@ architecture Behavioral of CPU is
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
     
-    signal MemRdStrobe : std_ulogic := '1';
-    signal MemWrStrobe : std_ulogic := '0';
-    signal memCE_sig, memOE_sig, memWE_sig : std_ulogic;
+    signal MemRdStrobe, MemWrStrobe : std_ulogic;
     
     component DataPath is
             port (
@@ -133,7 +125,7 @@ begin
         MemRdStrobe => MemRdStrobe,
         MemWrStrobe => MemWrStrobe,
         
-        ClkEnOpcode => ClkEnOpcode_sig,
+        ClkEnOpcode => ClkEnOpcode,
         ClkEnPC => ClkEnPC_sig,
         ClkEnRegFile => ClkEnRegFile_sig,
         SelPC => SelPC_sig, -- selectInput of SelPC-MUX
@@ -144,35 +136,20 @@ begin
         ALUFunc => ALUFunc -- selects the function
     );
 
-    RegOpCode <= RegOpcode_sig;
-    ClkEnOpcode <= ClkEnOpcode_sig;
-    ClkEnPC <= ClkEnPC_sig;
-        ClkEnRegFile <= ClkEnRegFile_sig;
-        SelLoad <= SelLoad_sig;
-        
-    MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
-    MemRdData <= std_ulogic_vector(MemIOData);
-    
 
-    MemCE <= memCE_sig;
-    MemOE <= memOE_sig;
-    MemWE <= memWE_sig;
-    
-
-MemorySignals: process (ZuluCLK)
+MemorySignals: process (MemRdStrobe, MemWrStrobe)
 begin
-    if MemRdStrobe = '1' then
-        memCE_sig <= '0';
-        memOE_sig <= '0';
-        memWE_sig <= '1';
-    elsif MemWrStrobe = '1' then
-        memCE_sig <= '0';
-        memOE_sig <= '1';
-        memWE_sig <= '0';
-    else 
-        memCE_sig <= '1';
-        memOE_sig <= '1';
-        memWE_sig <= '1';
+    if rising_edge(MemRdStrobe) then
+        MemCE <= '0';
+        MemOE <= '0';
+        MemWE <= '1';
+        MemIOData <= to_stdlogicvector(MemRdData);
+    end if;
+    if rising_edge(MemWrStrobe) then
+        MemCE <= '0';
+        MemOE <= '1';
+        MemWE <= '0';
+        MemIOData <= to_stdlogicvector(MemWrData);
     end if;
 end process;
 end Behavioral;

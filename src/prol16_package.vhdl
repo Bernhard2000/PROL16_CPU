@@ -58,7 +58,7 @@ package prol16_package is
     constant ALU_AminusBminusCarry : FuncControlVec := "1001";
     constant ALU_A_INC : FuncControlVec := "1010";
     constant ALU_A_DEC : FuncControlVec := "1011";
-    constant ALU_DONT_CARE : FuncControlVec := "XXXX";
+    constant ALU_DONT_CARE : FuncControlVec := "0000";
     
     
     

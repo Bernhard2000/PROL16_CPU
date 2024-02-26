@@ -68,13 +68,13 @@ architecture Behavioral of ControlPath is
         variable cyc : std_ulogic_vector(2 downto 0);
         begin
            if instrTerminate = '1' then
-                                report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
+                                --report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
                                                             cyc := Cycle_1;
-                                                            report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                                                            --report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
                                                             else
-                                report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
+                                --report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
                                 cyc := lastCycle(1 downto 0) & lastCycle(2);
-                                report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
+                                --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
                                 
                                 end if;                   
               return cyc;
@@ -120,11 +120,9 @@ begin
                     wr := '0';
                 when Cycle_2 =>
                     if RegOpCode =  OP_STORE then
+                        report "STORE";
                         wr := '1';
                         rd := '0';
-                     elsif RegOpCode = OP_LOAD or RegOpCode = OP_LOADI then
-                        wr := '0';
-                        rd := '1';
                      else
                         wr := '0';
                         rd := '1';
@@ -145,7 +143,7 @@ begin
         variable stop : std_ulogic := '1';
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
-        variable aluFunc_var : std_ulogic_vector(3 downto 0);
+        variable aluFunc_var : std_ulogic_vector(3 downto 0) := ALU_DONT_CARE;
         variable selAddr_var : std_ulogic := '0';
         variable selLoad_var : std_ulogic := '0';
         variable clkEnRegFile_var : std_ulogic := '0';
@@ -212,8 +210,8 @@ case RegOpcode is
                             clkEnRegFile_var := '0';
             
                             aluFunc_var := ALU_DONT_CARE;
-                            clkEnPC_var := '1';
-                            selPC_var := '1';
+                            clkEnPC_var := '0';
+                            selPC_var := 'X';
                         when OP_JUMP =>
                             report "JUMP";
                             selPC_var := '0';
@@ -292,17 +290,17 @@ case RegOpcode is
                           when OP_ADD =>
                             report "ADD";
                             aluFunc_var := ALU_AplusBplusCarry;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
                             alu_CarryIn_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_ADDC => 
                             report "ADDC";
                             aluFunc_var := ALU_AplusBplusCarry;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SUB => 
                             report "SUB";
@@ -311,41 +309,41 @@ case RegOpcode is
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '0';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                         when OP_SUBC => 
                             report "SUBC";
                             aluFunc_var := ALU_AminusBminusCarry;
                             selPC_var := 'X';
                             clkEnPC_var := '0';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                         when OP_COMP => 
                             report "COMP";
                             aluFunc_var := ALU_AminusBminusCarry;
                             selPC_var := 'X';
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '1';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                         when OP_INC =>
                             report "INC";
                             aluFunc_var := ALU_A_INC;
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_DEC =>
                             report "DEC";
                             aluFunc_var := ALU_A_DEC;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SHL => 
                             report "SHL";
                             ALUFunc <= ALU_ShiftALeft;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
                             clkEnPC_var := '0';
                         when OP_SHR =>
@@ -353,7 +351,7 @@ case RegOpcode is
                             ALUFunc <= ALU_ShiftARight;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
                             clkEnPC_var := '0';
                         when OP_SHRC => 
@@ -361,14 +359,14 @@ case RegOpcode is
                             ALUFunc <= ALU_ShiftARight;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SHLC => 
                             report "SHLC";
                             ALUFunc <= ALU_ShiftALeft;
                             selPC_var := 'X';
                             selLoad_var := '0';
-                            ClkENRegFile <= '1';
+                            clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when others =>
                             aluFunc_var := "XXXX";
@@ -382,18 +380,18 @@ case RegOpcode is
                 --ClkEnOpcode <= '1';
                 stop := '1';
                 selAddr_var := '0';
-                clkEnRegFile_var := '1';
+                clkEnRegFile_var := '0';
                 clkEnPC_var := '0';
 
 
                 case RegOpCode is
                     when OP_LOADI =>
                         aluFunc_var := "XXXX";
-                        selLoad_var := 'X';
+                        selLoad_var := '1';
                         selPC_var := 'X';
                     when OP_LOAD =>
                         aluFunc_var := "XXXX";
-                        selLoad_var := 'X';
+                        selLoad_var := '0';
                         selPC_var := 'X';
                     when OP_STORE =>
                         aluFunc_var := "XXXX";
