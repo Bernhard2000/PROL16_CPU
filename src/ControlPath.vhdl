@@ -33,6 +33,8 @@ entity ControlPath is
     );
 end ControlPath;
 
+    
+
 
 architecture Behavioral of ControlPath is  
     component CounterShifter is
@@ -47,7 +49,10 @@ architecture Behavioral of ControlPath is
  
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ClkEnOpcode_sig : std_ulogic;
-    signal instrTerminate : std_ulogic := '1';
+    signal instrTerminate : std_ulogic := '0';
+    
+    signal MemRdStrobe_sig : std_ulogic := '1';
+    signal MemWrStrobe_sig : std_ulogic := '0';
     
     
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
@@ -59,84 +64,122 @@ architecture Behavioral of ControlPath is
         result.Imm := data_vector(DataVec_length-1 downto 0);
         return result;
       end function;
+      
+      
+      
+      function clock_cycle(lastCycle : std_ulogic_vector; instrTerminate : std_ulogic) return std_ulogic_vector is
+        variable cyc : std_ulogic_vector(2 downto 0);
+        begin
+           if instrTerminate = '1' then
+                                report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
+                                                            cyc := Cycle_1;
+                                                            report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                                                            else
+                                report "Old cycle: " & integer'image(to_integer(unsigned(lastCycle))); 
+                                cyc := lastCycle(1 downto 0) & lastCycle(2);
+                                report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
+                                
+                                end if;                   
+              return cyc;
+      end function;
 begin
 
-    clockCycle: process(ZuluClk, Reset) is
+    clockCycle: process(ZuluClk, Reset, instrTerminate) is
+    variable cyc : std_ulogic_vector(2 downto 0) := Cycle_1;
     begin
+           ClkEnOpCode <= instrTerminate;
+
          if Reset = '1' then
-           cycle <= Cycle_1;
+           cyc := Cycle_1;
           report "Reset";
-        elsif rising_edge(ZuluClk) then
-            if instrTerminate = '1' then
-               cycle <= Cycle_1;
-               report "Terminate instruction";
-           else
-                cycle <= cycle(1 downto 0) & cycle(2);
-                report "New clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
-           end if;
+         end if;
+        if rising_edge(ZuluClk) then --TODO mit variablen
+                    if instrTerminate = '1' then
+                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                                                    cyc := Cycle_1;
+                          --                          report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                                                    else
+                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                        cyc := cyc(1 downto 0) & cyc(2);
+                        --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
+                        
+                        end if;
+                                
+             
       end if;
-           
+                     --cycle <= cyc;
            
     end process clockCycle;
     
     readWriteFlag: process(ZuluClk, cycle) is
+    variable rd : std_ulogic := '1';
+    variable wr : std_ulogic := '0';
     begin
+        MemWrStrobe <= MemWrStrobe_sig;
+        MemRdStrobe <= MemRdStrobe_sig;
         if rising_edge(ZuluClk) then
             case cycle is
                 when Cycle_1 =>
-                    MemRdStrobe <= '1';
-                    MemWrStrobe <= '0'; 
+                    MemRdStrobe_sig <= '0';
+                    MemWrStrobe_sig <= '0'; 
                 when Cycle_2 =>
                     if RegOpCode =  OP_STORE then
-                        MemWrStrobe <= '1';
-                        MemRdStrobe <= '0';
+                        MemWrStrobe_sig <= '1';
+                        MemRdStrobe_sig <= '0';
                      elsif RegOpCode = OP_LOAD or RegOpCode = OP_LOADI then
-                        MemWrStrobe <= '0';
-                        MemRdStrobe <= '1';
+                        MemWrStrobe_sig <= '0';
+                        MemRdStrobe_sig <= '1';
                      else
-                        MemWrStrobe <= '0';
-                        MemRdStrobe <= '0'; 
+                        MemWrStrobe_sig <= '0';
+                        MemRdStrobe_sig <= '1'; 
                      end if;
                 when Cycle_3 =>
-                    MemWrStrobe <= '0';
-                    MemRdStrobe <= '1';
+                    MemWrStrobe_sig <= '0';
+                    MemRdStrobe_sig <= '1';
                 when others =>
                     report "Unreachable clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
-                    MemWrStrobe <= '0';
-                    MemRdStrobe <= '1';
+                    MemWrStrobe_sig <= '0';
+                    MemRdStrobe_sig <= '1';
             end case;
         end if;
     end process readWriteFlag;
 
     readOpCode: process(ZuluClk, Reset, RegOpcode) is
         variable opCode : OpcodeVec;
+        variable stop : std_ulogic:= '0';
+        variable clkEnPC_var : std_ulogic;
     begin
-       ClkEnOpCode <= instrTerminate;
+           instrTerminate <= stop;
+           ClkEnPC <= clkEnPC_var;
        if rising_edge(ZuluClk) then
-
+       
         case cycle is
             when Cycle_1 => --increment PC
-                report "Increment PC";
-                instrTerminate <= '0';
-                ClkEnPC <= '1';
+                report "Cycle 1: Increment PC";
+                stop := '0';
+                clkEnPC_var := '1';
                 SelPC <= '1';
                 ALU_CarryIn <= '0';
                 --ClkEnOpcode <= '0';
                 SelAddr <= '0';
                 SelLoad <= 'X';
                 ClkEnRegFile <= '0';
-                AluFunc <= ALU_A_INC;           
+                AluFunc <= ALU_A_INC;   
+                cycle <= clock_cycle(cycle, stop);
             when Cycle_2 =>
-                report "Opcode: " &integer'image(to_integer(unsigned(RegOpcode)));
-                --ClkEnOpcode <= '0';
-                    case RegOpcode is 
-                        when OP_LOADI | OP_LOAD | OP_STORE =>
-                            instrTerminate <= '0';
-                        when others =>
-                            SelAddr <= '0';
-                            instrTerminate <= '1';
-                        end case;             
 
+                report "Cycle 2, Instr: Opcode: " &integer'image(to_integer(unsigned(RegOpcode)));
+                --ClkEnOpcode <= '0';
+case RegOpcode is 
+                                    when OP_LOADI | OP_LOAD | OP_STORE =>
+                                        stop := '0';
+                                    when others =>
+                                        SelAddr <= '0';
+                                        stop := '1';
+                                    end case;           
+                                    
+                                                                cycle <= clock_cycle(cycle, stop);
+     
                     case RegOpcode is 
                         when OP_LOADI =>
                             report "LOADI";
@@ -145,7 +188,7 @@ begin
                             ClkEnRegFile <= '1';
             
                             AluFunc <= ALU_A_INC;
-                            ClkEnPC <= '1';
+                            clkEnPC_var := '1';
                             SelPC <= '1';
 
                         when OP_LOAD =>
@@ -155,7 +198,7 @@ begin
                             ClkEnRegFile <= '0';
             
                             AluFunc <= ALU_DONT_CARE;
-                            ClkEnPC <= '0';
+                            clkEnPC_var := '0';
                             SelPC <= 'X';
 
                         when OP_STORE =>
@@ -229,13 +272,13 @@ begin
                             AluFunc <= ALU_NotA;
                             SelPC <= '0';
                             SelLoad <= '0';
-                            ClkEnPC <= '0';
+                            clkEnPC_var := '0';
                         when OP_NOP =>
                             report "NOP";
                             AluFunc <= "XXXX";
                             SelPC <= '0';
                             SelLoad <= '0';
-                            ClkEnPC <= '0';
+                            clkEnPC_var := '0';
                         when OP_SLEEP =>
                             report "SLEEP";
                             AluFunc <= "XXXX";
@@ -272,7 +315,6 @@ begin
                             ClkEnPC <= '0';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                         when OP_COMP => 
                             report "COMP";
                             AluFunc <= ALU_AminusBminusCarry;
@@ -280,14 +322,12 @@ begin
                             ClkEnPC <= '0';
                             ALU_CarryIn <= '1';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                         when OP_INC =>
                             report "INC";
                             AluFunc <= ALU_A_INC;
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when OP_DEC =>
                             report "DEC";
@@ -295,7 +335,6 @@ begin
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when OP_SHL => 
                             report "SHL";
@@ -304,7 +343,6 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             ALU_CarryIn <= '0';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when OP_SHR =>
                             report "SHR";
@@ -313,7 +351,6 @@ begin
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
                             ALU_CarryIn <= '0';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when OP_SHRC => 
                             report "SHRC";
@@ -321,7 +358,6 @@ begin
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when OP_SHLC => 
                             report "SHLC";
@@ -329,17 +365,16 @@ begin
                             SelPC <= 'X';
                             SelLoad <= '0';
                             ClkENRegFile <= '1';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                         when others =>
                             AluFunc <= "XXXX";
                             SelPC <= 'X';
                             SelLoad <= 'X';
-                            instrTerminate <= '1';
                             ClkEnPC <= '0';
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
+                            cycle <= clock_cycle(cycle, instrTerminate);
                 --ClkEnOpcode <= '1';
                 instrTerminate <= '1';
                 SelAddr <= '0';

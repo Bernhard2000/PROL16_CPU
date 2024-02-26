@@ -17,7 +17,8 @@ entity CPU is
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
     ClkEnPC : out std_ulogic;
-    ZuluClk : in std_ulogic);
+    ZuluClk : in std_ulogic;
+    RegOpCode : out OpcodeVec);
 end CPU;
 
 architecture Behavioral of CPU is    
@@ -36,7 +37,8 @@ architecture Behavioral of CPU is
     signal ALUFunc : std_ulogic_vector(3 downto 0);
     signal MemWrData, MemRdData : DataVec;
     
-    signal MemRdStrobe, MemWrStrobe : std_ulogic;
+    signal MemRdStrobe : std_ulogic := '1';
+    signal MemWrStrobe : std_ulogic := '0';
     signal memCE_sig, memOE_sig, memWE_sig : std_ulogic;
     
     component DataPath is
@@ -140,10 +142,11 @@ begin
         ALUFunc => ALUFunc -- selects the function
     );
 
+    RegOpCode <= RegOpcode_sig;
 
     MemIOData <= to_stdlogicvector(MemWrData) when (memWE_sig = '0' and memCE_sig = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);
-
+    
 
     MemCE <= memCE_sig;
     MemOE <= memOE_sig;
