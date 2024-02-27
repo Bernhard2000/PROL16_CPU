@@ -3,7 +3,7 @@
    3  
    4  ; ### Data ###
    5  ORG 08000h					; define address to store initial data in it
-   6  DB 7, 3						; pair of numbers to be added
+   6  DB 5, 25						; loop x times
    7  ORG 0000h					; reset address for programm code
    8  
    9  ; ### Constants ###
@@ -13,18 +13,38 @@
   13  LOADI R6, startAddress				; load start address of data section of RAM  into R6
   14  
   15  :start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
-  16  LOAD R0, R6					; load first number into R0
-  17  INC R6						; go to second number in RAM
-  18  LOAD R1, R6					; load second number into R1
-  19  ADD R0, R1					; add R0 and R1, result is in R0
-  20  
-  21  INC R6						; increment address counter 
-  22  STORE R0, R6					; store result in RAM (Adress: 08002h)
-  23  
-  24  LOADI R3, startAddress				; dump memory snapshot in hex file
-  25  LOADI R4, 0FFFFh
-  26  STORE R3, R4
-  27  SLEEP						; end simulation with sleep command
+  16  LOADI R3, loop_start             ;
+  17  LOADI R2, end               ;
+  18  LOADI R5, passed1           ;
+  19  LOADI R7, start             ;
+  20  LOAD R0, R6					; load first number into R0
+  21  INC R6                      ;
+  22  LOAD R1, R6                 ; load second number into R1
+  23  NOP                         ;
+  24  MOVE R4, R0                 ;
+  25  AND R4, R1                  ; should result in 1
+  26  MOVE R4, R0                 ; move 5 back into R4
+  27  OR R0, R1                   ; 29
+  28  XOR R0, R1                  ; 4
+  29  NOT R0                      ; 65531
+  30  ADD R0, R4                  ; 0
+  31  JUMPZ R5
+  32  JUMP R7                     ; infinite loop if result doesnt match
+  33  :passed1:
+  34  LOAD R0, R6					; load first number back into R0
+  35  INC R6                      ;
+  36  LOAD R1, R6                 ;
+  37  :loop_start:                ;
+  38  DEC R0                      ;
+  39  JUMPZ R2                    ;
+  40  JUMP R3                     ;
+  41  :end:                       ;
+  42  INC R6						; increment address counter
+  43  STORE R0, R6					; store result in RAM (Adress: 08002h)
+  44  LOADI R3, startAddress				; dump memory snapshot in hex file
+  45  LOADI R4, 0FFFFh
+  46  STORE R3, R4
+  47  SLEEP						; end simulation with sleep command
 
 
       Assembling complete : found 000 Errors
@@ -33,6 +53,9 @@
       Labels              Address
       ---------------------------
       START               0002h
+      LOOP_START          001Ah
+      END                 001Dh
+      PASSED1             0017h
 
       Constants           Value  
       ---------------------------
@@ -43,21 +66,40 @@
       ------------------------------------
 
 0000hex  LOADI   R6, 8000hex            000010_00110_00000  1000000000000000
-0002hex  LOAD    R0, R6                 000011_00000_00110
-0003hex  INC     R6                     011010_00110_00000
-0004hex  LOAD    R1, R6                 000011_00001_00110
-0005hex  ADD     R0, R1                 010100_00000_00001
-0006hex  INC     R6                     011010_00110_00000
-0007hex  STORE   R0, R6                 000100_00000_00110
-0008hex  LOADI   R3, 8000hex            000010_00011_00000  1000000000000000
-000Ahex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
-000Chex  STORE   R3, R4                 000100_00011_00100
-000Dhex  SLEEP                          000001_00000_00000
+0002hex  LOADI   R3, 001Ahex            000010_00011_00000  0000000000011010
+0004hex  LOADI   R2, 001Dhex            000010_00010_00000  0000000000011101
+0006hex  LOADI   R5, 0017hex            000010_00101_00000  0000000000010111
+0008hex  LOADI   R7, 0002hex            000010_00111_00000  0000000000000010
+000Ahex  LOAD    R0, R6                 000011_00000_00110
+000Bhex  INC     R6                     011010_00110_00000
+000Chex  LOAD    R1, R6                 000011_00001_00110
+000Dhex  NOP                            000000_00000_00000
+000Ehex  MOVE    R4, R0                 001100_00100_00000
+000Fhex  AND     R4, R1                 010000_00100_00001
+0010hex  MOVE    R4, R0                 001100_00100_00000
+0011hex  OR      R0, R1                 010001_00000_00001
+0012hex  XOR     R0, R1                 010010_00000_00001
+0013hex  NOT     R0                     010011_00000_00000
+0014hex  ADD     R0, R4                 010100_00000_00100
+0015hex  JUMPZ   R5                     001011_00101_00000
+0016hex  JUMP    R7                     001000_00111_00000
+0017hex  LOAD    R0, R6                 000011_00000_00110
+0018hex  INC     R6                     011010_00110_00000
+0019hex  LOAD    R1, R6                 000011_00001_00110
+001Ahex  DEC     R0                     011011_00000_00000
+001Bhex  JUMPZ   R2                     001011_00010_00000
+001Chex  JUMP    R3                     001000_00011_00000
+001Dhex  INC     R6                     011010_00110_00000
+001Ehex  STORE   R0, R6                 000100_00000_00110
+001Fhex  LOADI   R3, 8000hex            000010_00011_00000  1000000000000000
+0021hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
+0023hex  STORE   R3, R4                 000100_00011_00100
+0024hex  SLEEP                          000001_00000_00000
 
 
       Contents of Memory: Working RAM
       ---------------------------------
 
 
-8000hex  0000000000000111
-8001hex  0000000000000011
+8000hex  0000000000000101
+8001hex  0000000000011001

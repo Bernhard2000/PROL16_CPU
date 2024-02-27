@@ -33,8 +33,8 @@ component memory
         ClkEnRegfile : out std_ulogic;
             SelLoad : out std_ulogic;
             ZeroOut : out std_ulogic;
-            SelAddr : out std_ulogic
-
+            SelAddr : out std_ulogic;
+                 ALUResult : out DataVec 
     );
 end component; 
   
@@ -55,6 +55,7 @@ end component;
     signal SelLoad : std_ulogic;
     signal ZeroOut : std_ulogic;
     signal SelAddr : std_ulogic;
+    signal ALUResult : DataVec;
     
 begin
 
@@ -84,6 +85,7 @@ begin
       ClkEnRegfile => ClkEnRegfile,
       SelLoad => SelLoad,
       ZeroOut => ZeroOut,
-      SelAddr => SelAddr
+      SelAddr => SelAddr,
+      ALUResult => ALUResult
       ); 
 end CPU_TB_behav;

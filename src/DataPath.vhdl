@@ -40,7 +40,9 @@ entity DataPath is
     Reset
      : in std_ulogic; -- reset inpunt
     ZuluClk
-     : in std_ulogic); -- clock input
+     : in std_ulogic; -- clock input
+     
+     ALUResult : out DataVec); 
 end DataPath;
 
 architecture Behavioral of DataPath is
@@ -97,7 +99,7 @@ function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) retur
           return result;
         end function;
     
-signal AluResult : DataVec;
+signal AluResult_sig : DataVec;
 signal RaValue, RbValue : DataVec := (others => '0');
 signal aluSideA : DataVec := (others => '0');
 signal regPC : DataVec := (others => '0');
@@ -111,7 +113,7 @@ signal RegOpcode_sig_s : OpcodeVec := (others => '0');
 begin
 
     with SelLoad select
-                RegFileIn <= AluResult when '0',
+                RegFileIn <= AluResult_sig when '0',
                              MemRdData when '1',
                              (others => 'X') when others;
           
@@ -132,12 +134,14 @@ begin
     port map (
         SideA => aluSideA,
         SideB => RegTmpRb,
-        AluResult => AluResult,
+        AluResult => AluResult_sig,
         CarryIn => CarryIn,
         CarryOut => CarryOut,
         ZeroOut => ZeroOut,
         FuncControl => ALUFunc
     );
+    
+    ALUResult <= ALUResult_sig;
     
     writePC : process(ZuluClk, Reset, SelPC) is
     begin
@@ -148,7 +152,7 @@ begin
             if ClkEnPC = '1' then
                 case SelPC is
                     when '0' => RegPC <= RaValue;
-                    when '1' => RegPC <= AluResult;
+                    when '1' => RegPC <= AluResult_sig;
                     when others => RegPC <= (others => 'X');
                 end case;
             end if;

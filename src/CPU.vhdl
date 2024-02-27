@@ -22,7 +22,8 @@ entity CPU is
     ClkEnRegFile : out std_ulogic;
     SelLoad : out std_ulogic;
     ZeroOut : out std_ulogic;
-    SelAddr : out std_ulogic
+    SelAddr : out std_ulogic;
+    ALUResult : out DataVec
     );
 end CPU;
 
@@ -67,7 +68,8 @@ architecture Behavioral of CPU is
                 MemRdData : in DataVec; -- data wires for reading the memory
                 ---------------------------------- [ clk,reset ] ------------------
                 Reset : in std_ulogic; -- reset inpunt
-                ZuluClk : in std_ulogic -- clock input
+                ZuluClk : in std_ulogic; -- clock input
+                ALUResult : out DataVec
             ); 
         end component;
         
@@ -121,7 +123,8 @@ begin
         MemRdData => MemRdData, -- data wires for reading the memory
         ---------------------------------- [ clk,reset ] ------------------
         Reset => Reset, -- reset inpunt
-        ZuluClk => ZuluClk -- clock input
+        ZuluClk => ZuluClk, -- clock input
+        ALUResult => ALUResult
     );
     
     controlPath_instance : ControlPath

@@ -2,7 +2,6 @@
 # Compile of MemoryTB.vhd was successful with warnings.
 # Compile of CPU.vhdl was successful.
 # Compile of AddDataVec.vhdl was successful.
-# Compile of ALU.vhdl was successful.
 # Compile of ControlPath.vhdl was successful.
 # Compile of AddDataVec_Testbench.vhdl failed with 3 errors.
 # Compile of ALU_Testbench.vhd was successful.
@@ -13,7 +12,7 @@
 # Compile of Shiftright_Testbench.vhdl failed with 6 errors.
 # Compile of prol16_package.vhdl was successful.
 # Compile of DataPath.vhdl was successful.
-# Compile of registerfile.vhdl was successful.
 # Compile of Shiftleft.vhdl was successful.
 # Compile of Shiftright.vhdl was successful.
-# 18 compiles, 3 failed with 12 errors.
+# Compile of ALU.vhdl was successful.
+# 17 compiles, 3 failed with 12 errors.

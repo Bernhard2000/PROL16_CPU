@@ -51,7 +51,9 @@ architecture Behavioral of ControlPath is
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
-    signal instrTerminate : std_ulogic := '0';      
+    signal instrTerminate : std_ulogic := '0';
+    
+    signal carryOut_sig, zeroOut_sig : std_ulogic := '0';      
     
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
         variable result : OpcodeValueType;
@@ -114,6 +116,23 @@ begin
            
     end process clockCycle;
     
+    
+    --TODO carry and zezo flags
+    setFlags: process(carryOut_sig, zeroOut_sig) is
+    begin
+    if cycle = Cycle_2 then
+                                       carryOut_sig <= '0';
+    zeroOut_sig <= '0';
+    
+        elsif rising_edge(carryOut_sig) then
+            carryOut_sig <= ALU_CarryOut;
+        
+        elsif rising_edge(zeroOut_sig) then
+            zeroOut_sig <= ALU_ZeroOut;
+        end if;
+        
+    end process;
+    
     readWriteFlag: process(cycle) is
     variable rd : std_ulogic := '1';
     variable wr : std_ulogic := '0';
@@ -132,6 +151,7 @@ begin
                         rd := '1';
                      end if;
                 when Cycle_3 =>
+
                     wr := '0';
                     rd := '1';
                 when others =>
@@ -170,7 +190,6 @@ begin
                     when OP_JUMPZ => 
                         report "JUMPZ";
                         if ALU_ZeroOut = '1' then
-                            report "DO JUMP";
                             selPC_var := '0';
                             clkEnPC_var := '1';
                             selLoad_var := 'X';
@@ -207,11 +226,7 @@ begin
                         selPC_var := '1';
                         selLoad_var := 'X';
                         aluFunc_var := ALU_A_INC;
-                end case;                              
-                
-                if RegOpcode =  OP_STORE then
-                    report "STORE_SIGNAL_EARLY";
-                end if;                   
+                end case;                                                     
                                
             when Cycle_2 =>
                     case RegOpcode is 
@@ -266,11 +281,12 @@ begin
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
+                            
                         when OP_MOVE =>
                         report "MOVE";
                             aluFunc_var := ALU_SideB;
                             selPC_var := 'X';
-                            selLoad_var := '0';
+                            clkEnRegFile_var := '1';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                         when OP_AND =>
@@ -279,30 +295,35 @@ begin
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := '1';
                         when OP_OR =>
                             report "OR";
                             aluFunc_var := ALU_AorB;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := '1';
                         when OP_XOR =>
                             report "XOR";
                             aluFunc_var := ALU_AxorB;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := '1';
                         when OP_NOT =>
                             report "NOT";
                             aluFunc_var := ALU_NotA;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := '1';
                         when OP_NOP =>
                             report "NOP";
                             aluFunc_var := "XXXX";
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := '0';
                         when OP_SLEEP =>
                             report "SLEEP";
                             aluFunc_var := "XXXX";
@@ -322,6 +343,7 @@ begin
                             aluFunc_var := ALU_AplusBplusCarry;
                             selPC_var := '0';
                             selLoad_var := '0';
+                            alu_CarryIn_var := carryOut_sig;
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SUB => 
@@ -337,6 +359,7 @@ begin
                             aluFunc_var := ALU_AminusBminusCarry;
                             selPC_var := '0';
                             clkEnPC_var := '0';
+                            alu_CarryIn_var := carryOut_sig;
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                         when OP_COMP => 
