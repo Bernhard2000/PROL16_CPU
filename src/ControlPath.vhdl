@@ -118,7 +118,7 @@ begin
     
     
     --TODO carry and zezo flags
-    setFlags: process(carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut) is
+    setFlags: process(carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
     begin
     if cycle = Cycle_2 then
                                        carryOut_sig <= '0';
@@ -277,17 +277,19 @@ begin
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := 'X';
                         when OP_JUMPC =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
+                            clkEnRegFile_var := 'X';
                         when OP_JUMPZ =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
-                            
+                            clkEnRegFile_var := 'X';
                         when OP_MOVE =>
                         report "MOVE";
                             aluFunc_var := ALU_SideB;
@@ -335,6 +337,7 @@ begin
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
+                            clkEnRegFile_var := 'X';
                             assert false report "Simulation finished" severity failure;
                           when OP_ADD =>
                             report "ADD";
@@ -391,7 +394,7 @@ begin
                             clkEnPC_var := '0';
                         when OP_SHL => 
                             report "SHL";
-                            ALUFunc <= ALU_ShiftALeft;
+                            aluFunc_var := ALU_ShiftALeft;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
@@ -399,7 +402,7 @@ begin
                             clkEnPC_var := '0';
                         when OP_SHR =>
                             report "SHR";
-                            ALUFunc <= ALU_ShiftARight;
+                            aluFunc_var := ALU_ShiftARight;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
@@ -407,14 +410,14 @@ begin
                             clkEnPC_var := '0';
                         when OP_SHRC => 
                             report "SHRC";
-                            ALUFunc <= ALU_ShiftARight;
+                            aluFunc_var := ALU_ShiftARight;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                         when OP_SHLC => 
                             report "SHLC";
-                            ALUFunc <= ALU_ShiftALeft;
+                            aluFunc_var := ALU_ShiftALeft;
                             selPC_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
@@ -425,6 +428,7 @@ begin
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
                             legalOpCode := '0';
+                            clkEnRegFile_var := 'X';
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
@@ -455,8 +459,11 @@ begin
                         legalOpCode := '0';
                 end case;
             when others => 
-                ALUFunc <= "XXXX";  
-                legalOpCode := '0';    
+                aluFunc_var := "XXXX";  
+                legalOpCode := '0';  
+                clkEnPC_var := '0';
+                stop := '1';  
+                clkEnRegFile_var := 'X';
         end case;      
                   instrTerminate <= stop;
                   ClkEnOpCode_sig <= stop;
