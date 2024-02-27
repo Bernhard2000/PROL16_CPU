@@ -118,7 +118,7 @@ begin
     
     
     --TODO carry and zezo flags
-    setFlags: process(carryOut_sig, zeroOut_sig) is
+    setFlags: process(carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut) is
     begin
     if cycle = Cycle_2 then
                                        carryOut_sig <= '0';
@@ -136,7 +136,7 @@ begin
         
     end process;
     
-    readWriteFlag: process(cycle) is
+    readWriteFlag: process(cycle, RegOpCode) is
     variable rd : std_ulogic := '1';
     variable wr : std_ulogic := '0';
     begin
@@ -166,7 +166,7 @@ begin
             MemRdStrobe <= rd;
     end process readWriteFlag;
 
-    readOpCode: process(cycle, RegOpCode) is
+    readOpCode: process(cycle, RegOpCode) is --TODO fix with ZeroOut, CarryOut in sensitivity list
         variable stop : std_ulogic := '1';
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
@@ -180,9 +180,11 @@ begin
         case cycle is
             when Cycle_1 => --increment PC
                 stop := '0';
-
+                selAddr_var := '0';
                                                         alu_CarryIn_var := '0';
                                                         clkEnRegFile_var := '0';
+                                                                        legalOpCode := '1';
+
                 case RegOpCode is
                     when OP_JUMP => 
                          report "JUMP";
@@ -232,6 +234,7 @@ begin
                 end case;                                                     
                                
             when Cycle_2 =>
+                    legalOpCode := '1';
                     case RegOpcode is 
                                     when OP_LOADI | OP_LOAD | OP_STORE =>
                                         stop := '0';
@@ -430,7 +433,7 @@ begin
                 selAddr_var := '0';
                 clkEnRegFile_var := '0';
                 clkEnPC_var := '0';
-
+                legalOpCode := '1';
 
                 case RegOpCode is
                     when OP_LOADI =>
