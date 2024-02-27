@@ -8,7 +8,8 @@ use work.prol16_package.all;
 
 entity DataPath is
     port (
-    ClkEnPC : in std_ulogic; -- clock enable of register PC
+    ClkEnPC
+    : in std_ulogic; -- clock enable of register PC
     ClkEnRegFile : in std_ulogic; -- clock enable of register file
     ClkEnOpcode : in std_ulogic; -- clock enable of register Opcode
     SelPC
@@ -31,7 +32,7 @@ entity DataPath is
     -- Of the ALU
     ---------------------------------- [ MEM ] ------------------------
     MemAddr
-     : out DataVec := (others => '0'); -- address wires of memory
+     : out DataVec; -- address wires of memory
     MemWrData
      : out DataVec; -- data wires for writing the memory
     MemRdData
@@ -40,11 +41,8 @@ entity DataPath is
     Reset
      : in std_ulogic; -- reset inpunt
     ZuluClk
-     : in std_ulogic; -- clock input
-     
-     ALUResult : out DataVec); 
+     : in std_ulogic); -- clock input
 end DataPath;
-
 architecture Behavioral of DataPath is
 
 component RegisterFile is

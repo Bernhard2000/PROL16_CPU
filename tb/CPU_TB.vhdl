@@ -18,24 +18,15 @@ component memory
   end component;
   
  component CPU
-    port (
-        MemIOData : inout std_logic_vector(15 downto 0);
-        MemAddr : out DataVec;
-        MemCE : out std_ulogic; -- low-active (Chip Enable)
-        MemWE : out std_ulogic; -- low-active (Write Enable)
-        MemOE : out std_ulogic; -- low-active (Output Enable)
-        ClkEnOpcode : out std_ulogic;
-        LegalOpcodePresent : out std_ulogic;
-        Reset : in std_ulogic;
-        ClkEnPC : out std_ulogic;
-        ZuluClk : in std_ulogic;
-        RegOpCode : out OpcodeVec;
-        ClkEnRegfile : out std_ulogic;
-            SelLoad : out std_ulogic;
-            ZeroOut : out std_ulogic;
-            SelAddr : out std_ulogic;
-                 ALUResult : out DataVec 
-    );
+    port (MemIOData : inout std_logic_vector(15 downto 0);
+     MemAddr : out DataVec;
+     MemCE : out std_ulogic; -- low-active (Chip Enable)
+     MemWE : out std_ulogic; -- low-active (Write Enable)
+     MemOE : out std_ulogic; -- low-active (Output Enable)
+     ClkEnOpcode : out std_ulogic;
+     LegalOpcodePresent : out std_ulogic;
+     Reset : in std_ulogic;
+     ZuluClk : in std_ulogic);
 end component; 
   
     signal ZuluClk : std_ulogic := '0';
@@ -48,14 +39,6 @@ end component;
     signal ClkEnOpcode_s : std_ulogic := '0';
     signal LegalOpcodePresent_s : std_ulogic := '0';
     signal Reset_s : std_ulogic := '0';
-    signal ClkEnRegfile : std_ulogic;
-    
-    signal ClkEnPC : std_ulogic;
-    signal RegOpCode : OpcodeVec;
-    signal SelLoad : std_ulogic;
-    signal ZeroOut : std_ulogic;
-    signal SelAddr : std_ulogic;
-    signal ALUResult : DataVec;
     
 begin
 
@@ -79,13 +62,6 @@ begin
       ClkEnOpcode => ClkEnOpcode_s,
       LegalOpcodePresent => LegalOpcodePresent_s,
       Reset => Reset_s,
-      ZuluClk => ZuluClk,
-      ClkEnPC => ClkEnPC,
-      RegOpCode => RegOpCode,
-      ClkEnRegfile => ClkEnRegfile,
-      SelLoad => SelLoad,
-      ZeroOut => ZeroOut,
-      SelAddr => SelAddr,
-      ALUResult => ALUResult
+      ZuluClk => ZuluClk
       ); 
 end CPU_TB_behav;
