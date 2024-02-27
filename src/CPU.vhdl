@@ -10,13 +10,19 @@ use work.prol16_package.all;
 entity CPU is
     port (MemIOData : inout std_logic_vector(15 downto 0);
     MemAddr : out DataVec;
-    MemCE : out std_ulogic; -- low-active (Chip Enable)
-    MemWE : out std_ulogic; -- low-active (Write Enable)
-    MemOE : out std_ulogic; -- low-active (Output Enable)
+    MemCE : out std_ulogic := '0'; -- low-active (Chip Enable)
+    MemWE : out std_ulogic := '1'; -- low-active (Write Enable)
+    MemOE : out std_ulogic := '0'; -- low-active (Output Enable)
     ClkEnOpcode : out std_ulogic;
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
-    ZuluClk : in std_ulogic);
+    ClkEnPC : out std_ulogic;
+    ZuluClk : in std_ulogic;
+    RegOpCode : out OpcodeVec;
+    ClkEnRegFile : out std_ulogic;
+    SelLoad : out std_ulogic;
+    ZeroOut : out std_ulogic;
+    SelAddr : out std_ulogic);
 end CPU;
 
 architecture Behavioral of CPU is    
@@ -127,9 +133,28 @@ begin
         ALU_ZeroOut => ZeroOut_sig, -- connects to ZeroOut output of ALU
         
         MemRdStrobe => MemRdStrobe,
-        MemWrStrobe => MemWrStrobe       
+        MemWrStrobe => MemWrStrobe,
+        
+        ClkEnOpcode => ClkEnOpcode_sig,
+        ClkEnPC => ClkEnPC_sig,
+        ClkEnRegFile => ClkEnRegFile_sig,
+        SelPC => SelPC_sig, -- selectInput of SelPC-MUX
+        SelLoad => SelLoad_sig, -- selectInput of SelLoad-MUX
+        SelAddr => SelAddr_sig, -- selectInput of SelAddr-MUX
+        LegalOpcodePresent => LegalOpcodePresent,
+          
+        ALU_CarryIn => CarryIn_sig, -- connects to carryIn input of ALU         
+        ALUFunc => ALUFunc -- selects the function
     );
-   
+
+    RegOpCode <= RegOpcode_sig;
+    ClkEnOpcode <= ClkEnOpcode_sig;
+    ClkEnPC <= ClkEnPC_sig;
+        ClkEnRegFile <= ClkEnRegFile_sig;
+        SelLoad <= SelLoad_sig;
+        ZeroOut <= ZeroOut_sig;
+        SelAddr <= SelAddr_sig;
+        
     MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
     MemRdData <= std_ulogic_vector(MemIOData);
     
