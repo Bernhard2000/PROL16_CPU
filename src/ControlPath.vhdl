@@ -124,11 +124,14 @@ begin
                                        carryOut_sig <= '0';
     zeroOut_sig <= '0';
     
-        elsif rising_edge(carryOut_sig) then
+        else 
+        if carryOut_sig = '1' then
             carryOut_sig <= ALU_CarryOut;
         
-        elsif rising_edge(zeroOut_sig) then
+        elsif zeroOut_sig = '1' then
             zeroOut_sig <= ALU_ZeroOut;
+        end if;
+        
         end if;
         
     end process;
