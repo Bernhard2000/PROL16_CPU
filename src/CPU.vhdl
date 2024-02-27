@@ -10,9 +10,9 @@ use work.prol16_package.all;
 entity CPU is
     port (MemIOData : inout std_logic_vector(15 downto 0);
     MemAddr : out DataVec;
-    MemCE : out std_ulogic := '0'; -- low-active (Chip Enable)
-    MemWE : out std_ulogic := '1'; -- low-active (Write Enable)
-    MemOE : out std_ulogic := '0'; -- low-active (Output Enable)
+    MemCE : out std_ulogic; -- low-active (Chip Enable)
+    MemWE : out std_ulogic; -- low-active (Write Enable)
+    MemOE : out std_ulogic; -- low-active (Output Enable)
     ClkEnOpcode : out std_ulogic;
     LegalOpcodePresent : out std_ulogic;
     Reset : in std_ulogic;
@@ -39,11 +39,10 @@ architecture Behavioral of CPU is
     signal ZeroOut_sig : std_ulogic := '0';
     
     signal ALUFunc : std_ulogic_vector(3 downto 0);
-    signal MemWrData, MemRdData : DataVec;
+    signal MemWrData_sig, MemRdData_sig : DataVec;
     
-    signal MemRdStrobe : std_ulogic := '1';
-    signal MemWrStrobe : std_ulogic := '0';
-    signal memCE_sig, memOE_sig, memWE_sig : std_ulogic := '0';
+    signal MemRdStrobe_sig : std_ulogic := '1';
+    signal MemWrStrobe_sig : std_ulogic := '0';
     
     component DataPath is
             port (
@@ -116,8 +115,8 @@ begin
         -- Of the ALU
         ---------------------------------- [ MEM ] ------------------------
         MemAddr => MemAddr, -- address wires of memory
-        MemWrData => MemWrData, -- data wires for writing the memory
-        MemRdData => MemRdData, -- data wires for reading the memory
+        MemWrData => MemWrData_sig, -- data wires for writing the memory
+        MemRdData => MemRdData_sig, -- data wires for reading the memory
         ---------------------------------- [ clk,reset ] ------------------
         Reset => Reset, -- reset inpunt
         ZuluClk => ZuluClk -- clock input
@@ -132,8 +131,8 @@ begin
         ALU_CarryOut => CarryOut_sig,
         ALU_ZeroOut => ZeroOut_sig, -- connects to ZeroOut output of ALU
         
-        MemRdStrobe => MemRdStrobe,
-        MemWrStrobe => MemWrStrobe,
+        MemRdStrobe => MemRdStrobe_sig,
+        MemWrStrobe => MemWrStrobe_sig,
         
         ClkEnOpcode => ClkEnOpcode_sig,
         ClkEnPC => ClkEnPC_sig,
@@ -155,25 +154,14 @@ begin
         ZeroOut <= ZeroOut_sig;
         SelAddr <= SelAddr_sig;
         
-    MemIOData <= to_stdlogicvector(MemWrData) when (MemWrStrobe = '1' and MemRdStrobe = '0') else (others => 'Z');
-    MemRdData <= std_ulogic_vector(MemIOData);
+    MemIOData <= to_stdlogicvector(MemWrData_sig) when (MemWrStrobe_sig = '1' and MemRdStrobe_sig = '0') else (others => 'Z');
+    MemRdData_sig <= std_ulogic_vector(MemIOData);
     
 
-    MemCE <= not (MemRdStrobe or MemWrStrobe);
-    MemOE <= not MemRdStrobe;
-    MemWE <= not MemWrStrobe;
+    MemCE <= not (MemRdStrobe_sig or MemWrStrobe_sig);
+    MemOE <= not MemRdStrobe_sig;
+    MemWE <= not MemWrStrobe_sig;
     
-
-    With MemRdStrobe select
-        memOE_sig <= '0' when '1',
-                     '1' when '0',
-                     'X' when others;
-                     
-    With MemWrStrobe select
-         memWE_sig <= '0' when '1',
-         '1' when '0',
-                              'X' when others;
-                
                      
 --MemorySignals: process (ZuluCLK)
 --begin

@@ -139,7 +139,6 @@ begin
         FuncControl => ALUFunc
     );
     
-    ALUResult <= ALUResult_sig;
     
     writePC : process(ZuluClk, Reset, SelPC) is
     begin

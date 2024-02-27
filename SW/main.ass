@@ -1,0 +1,47 @@
+; ### Assemblerprogram to add two 16 bit unsigned numbers ###
+
+
+; ### Data ###
+ORG 08000h					; define address to store initial data in it
+DB 5, 25						; loop x times
+ORG 0000h					; reset address for programm code
+
+; ### Constants ###
+EQU startAddress, 08000h
+
+; ### Code ###
+LOADI R6, startAddress				; load start address of data section of RAM  into R6
+
+:start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
+LOADI R3, loop_start             ;
+LOADI R2, end               ;
+LOADI R5, passed1           ;
+LOADI R7, start             ;
+LOAD R0, R6					; load first number into R0
+INC R6                      ;
+LOAD R1, R6                 ; load second number into R1
+NOP                         ;
+MOVE R4, R0                 ;
+AND R4, R1                  ; should result in 1
+MOVE R4, R0                 ; move 5 back into R4
+OR R0, R1                   ; 29
+XOR R0, R1                  ; 4
+NOT R0                      ; 65531
+ADD R0, R4                  ; 0
+JUMPZ R5
+JUMP R7                     ; infinite loop if result doesnt match
+:passed1:
+LOAD R0, R6					; load first number back into R0
+INC R6                      ;
+LOAD R1, R6                 ;
+:loop_start:                ;
+DEC R0                      ;
+JUMPZ R2                    ;
+JUMP R3                     ;
+:end:                       ;
+INC R6						; increment address counter
+STORE R0, R6					; store result in RAM (Adress: 08002h)
+LOADI R3, startAddress				; dump memory snapshot in hex file
+LOADI R4, 0FFFFh
+STORE R3, R4
+SLEEP						; end simulation with sleep command
