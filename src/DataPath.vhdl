@@ -86,7 +86,17 @@ function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) retur
       result.Imm := data_vector(DataVec_length-1 downto 0);
       return result;
     end function;
-
+    
+    function OpcodeValueType_default return OpcodeValueType is
+    variable result : OpcodeValueType;
+        begin
+          result.Code := (others => '0'); --5-0
+          result.Ra := (others => '0'); --10-6
+          result.Rb := (others => '0'); --15-11
+          result.Imm := (others => '0');
+          return result;
+        end function;
+    
 signal AluResult : DataVec;
 signal RaValue, RbValue : DataVec := (others => '0');
 signal aluSideA : DataVec := (others => '0');
@@ -172,6 +182,7 @@ begin
                 
 
     writeOpcode : process(ZuluClk, Reset, ClkEnOpcode, MemRdData) is
+        variable opcodeValue : OpcodeValueType := OpcodeValueType_default;
     begin
         if Reset = ResetActive then
             RegOpcode_sig <= (others => '0');
@@ -180,9 +191,10 @@ begin
         elsif rising_edge(ZuluClk) then
                 --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
             if ClkEnOpcode = '1' then
-                RegOpcode_sig <= ulogic_vector_to_OpcodeValueType(MemRdData).Code;
-                        RegSelRa <= ulogic_vector_to_OpcodeValueType(MemRdData).Ra;
-                        RegSelRb <= ulogic_vector_to_OpcodeValueType(MemRdData).Rb;
+                opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
+                RegOpcode_sig <= opcodeValue.Code;
+                        RegSelRa <= opcodeValue.Ra;
+                        RegSelRb <= opcodeValue.Rb;
                 --report "DataPath: Ra: "&integer'image(to_integer(unsigned(opcodeValue.Ra))) & "Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
             end if;
         end if;

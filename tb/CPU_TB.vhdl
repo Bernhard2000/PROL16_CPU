@@ -32,7 +32,9 @@ component memory
         RegOpCode : out OpcodeVec;
         ClkEnRegfile : out std_ulogic;
             SelLoad : out std_ulogic;
-            ZeroOut : out std_ulogic
+            ZeroOut : out std_ulogic;
+            SelAddr : out std_ulogic
+
     );
 end component; 
   
@@ -52,6 +54,7 @@ end component;
     signal RegOpCode : OpcodeVec;
     signal SelLoad : std_ulogic;
     signal ZeroOut : std_ulogic;
+    signal SelAddr : std_ulogic;
     
 begin
 
@@ -80,6 +83,7 @@ begin
       RegOpCode => RegOpCode,
       ClkEnRegfile => ClkEnRegfile,
       SelLoad => SelLoad,
-      ZeroOut => ZeroOut
+      ZeroOut => ZeroOut,
+      SelAddr => SelAddr
       ); 
 end CPU_TB_behav;
