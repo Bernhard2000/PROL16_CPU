@@ -36,7 +36,6 @@ end ControlPath;
 
     
 
-
 architecture Behavioral of ControlPath is  
     component CounterShifter is
         generic ( Size : natural := 1); -- data width is 2^n (2^1=2 Bits)
@@ -48,7 +47,7 @@ architecture Behavioral of ControlPath is
     end component;
 
  
-    signal cycle : std_ulogic_vector(2 downto 0) := Cycle_3;
+    signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
     signal instrTerminate : std_ulogic := '0';
@@ -91,54 +90,59 @@ begin
         SelPC <= SelPC_sig;
         ALU_CarryIn <= ALU_CarryIn_sig;
         
-    clockCycle: process(ZuluCLK, RegOpcode, Reset, instrTerminate, cycle) is
-    variable cyc : std_ulogic_vector(2 downto 0) := "100";
-    begin
-        
-         if Reset = '1' then
-           cyc := Cycle_3;
-          report "Reset";
-         end if;
-        if rising_edge(ZuluClk) then --TODO mit variablen
-                    if instrTerminate = '1' then
-                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
-                                                    cyc := Cycle_1;
-                          --                          report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
-                                                    else
-                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
-                        cyc := cyc(1 downto 0) & cyc(2);
-                        --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
-                        
-                        end if;    
-      end if;
-      cycle <= cyc;
-    end process clockCycle;
+    --clockCycle: process(ZuluCLK, Reset) is
+    --variable cyc : std_ulogic_vector(2 downto 0) := "100";
+    --begin
+    --    
+    --     if Reset = '1' then
+    --       cyc := Cycle_3;
+    --      report "Reset";
+    --    elsif rising_edge(ZuluClk) then --TODO mit variablen
+    --                if instrTerminate = '1' then
+    --                    --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+    --                                                cyc := Cycle_1;
+    --                      --                          report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
+    --                                                else
+    --                    --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+    --                    cyc := cyc(1 downto 0) & cyc(2);
+    --                    --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
+    --                    
+    --                    end if;    
+    --  end if;
+    --            cycle <= cyc;
+
+--    end process clockCycle;
     
     
     --TODO carry and zezo flags
-    setFlags: process(carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
+    setFlags: process(ZuluCLK, carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
     begin
-    if cycle = Cycle_2 then
-        carryOut_sig <= '0';
-        zeroOut_sig <= '0';
-    
-        else 
-        if ALU_CarryOut = '1' then
-            carryOut_sig <= ALU_CarryOut;
-        
-        elsif ALU_ZeroOut = '1' then
+        if rising_edge(ZuluCLK) then
+            
+            if ALU_CarryOut = '0' and ALU_ZeroOut = '1' then
+                            zeroOut_sig <= ALU_ZeroOut;
+            elsif ALU_CarryOut = '1' and ALU_ZeroOut = '0' then
+                carryOut_sig <= ALU_CarryOut;  
+                                  elsif ALU_CarryOut = '1' and ALU_ZeroOut = '1' then
             zeroOut_sig <= ALU_ZeroOut;
-        end if;
-        
-        end if;
+                            carryOut_sig <= ALU_CarryOut;  
+            elsif cycle = Cycle_1 then
+                carryOut_sig <= '0';
+                zeroOut_sig <= '0';
+                
+            else 
+                carryOut_sig <= carryOut_sig;
+                zeroOut_sig <= zeroOut_sig;
+        end if;   
+        end if; 
         
     end process;
     
-    readWriteFlag: process(cycle, RegOpCode) is
+    readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is
     variable rd : std_ulogic := '1';
     variable wr : std_ulogic := '0';
     begin
-        
+        if rising_edge(ZuluCLK) then
             case cycle is
                 when Cycle_1 =>
                     rd := '0';
@@ -160,12 +164,15 @@ begin
                     wr := '0';
                     rd := '1';
             end case;
+            
+            end if;
             MemWrStrobe <= wr;
-            MemRdStrobe <= rd;
+                        MemRdStrobe <= rd;
     end process readWriteFlag;
 
-    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig) is
+    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig, ZuluCLK) is
         variable stop : std_ulogic := '0';
+        variable cyc : std_ulogic_vector(2 downto 0) := "001";
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
         variable aluFunc_var : std_ulogic_vector(3 downto 0) := ALU_DONT_CARE;
@@ -175,6 +182,7 @@ begin
         variable alu_CarryIn_var : std_ulogic := '0';
         variable legalOpCode : std_ulogic := '1';
     begin                
+        if rising_edge(ZuluCLK) then
         case cycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1";
@@ -195,6 +203,7 @@ begin
                     when OP_JUMPZ => 
                         report "JUMPZ";
                         if zeroOut_sig = '1' then
+                            report "DO JUMPZ";
                             selPC_var := '0';
                             aluFunc_var := "XXXX";
                         else
@@ -259,7 +268,7 @@ begin
                             alu_CarryIn_var := 'X';
                         when OP_JUMP =>
                             aluFunc_var := "XXXX";
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '0';
@@ -267,7 +276,7 @@ begin
                             alu_CarryIn_var := 'X';
                         when OP_JUMPC =>
                             aluFunc_var := "XXXX";
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '0';
@@ -275,7 +284,7 @@ begin
                             alu_CarryIn_var := 'X';
                         when OP_JUMPZ =>
                             aluFunc_var := "XXXX";
-                            selPC_var := 'X';
+                            selPC_var := '0';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '0';
@@ -303,7 +312,7 @@ begin
                             report "OR";
                             aluFunc_var := ALU_AorB;
                             selPC_var := '0';
-                            selLoad_var := '0';
+
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
                             selAddr_var := '0';
@@ -370,7 +379,7 @@ begin
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '0';
                             selLoad_var := '0';
-                            clkEnRegFile_var := '1';
+                            ClkEnRegFile_var := '1';
                             selAddr_var := '0';
                         when OP_SUBC => 
                             report "SUBC";
@@ -386,8 +395,8 @@ begin
                             aluFunc_var := ALU_AminusBminusCarry;
                             selPC_var := '0';
                             clkEnPC_var := '0';
-                            alu_CarryIn_var := '1';
-                            clkEnRegFile_var := '1';
+                            alu_CarryIn_var := '0';
+                            clkEnRegFile_var := '0';
                             selLoad_var := 'X';
                             selAddr_var := '0';
                         when OP_INC =>
@@ -487,23 +496,27 @@ begin
                 aluFunc_var := "XXXX";  
                 legalOpCode := '0';  
                 clkEnPC_var := '0';
-                stop := '1';  
+                instrTerminate <= '1';  
                 clkEnRegFile_var := '0';
                 selLoad_var := 'X';
                 selAddr_var := '0';
                 selPC_var := 'X';
                 alu_CarryIn_var := 'X';
+                stop := '1';
         end case;      
-                  
-                instrTerminate <= stop;
-                  ClkEnOpCode_sig <= stop;
-                  ClkEnPC_sig <= clkEnPC_var;
-                  SelPC_sig <= selPC_var;
-                  AluFunc <= aluFunc_var;
-                  SelAddr_sig <= selAddr_var;
-                  SelLoad_sig <= selLoad_var;
-                  ClkEnRegFile_sig <= clkEnRegFile_var;
-                  ALU_CarryIn_sig <= alu_CarryIn_var;  
-                  LegalOpcodePresent <= legalOpCode;
+                                        cycle <= clock_cycle(cycle, stop);
+
+                
+                      end if;
+instrTerminate <= stop;
+                                        ClkEnOpCode_sig <= stop;
+                                        ClkEnPC_sig <= clkEnPC_var;
+                                        SelPC_sig <= selPC_var;
+                                        AluFunc <= aluFunc_var;
+                                        SelAddr_sig <= selAddr_var;
+                                        SelLoad_sig <= selLoad_var;
+                                        ClkEnRegFile_sig <= clkEnRegFile_var;
+                                        ALU_CarryIn_sig <= alu_CarryIn_var;  
+                                        LegalOpcodePresent <= legalOpCode;
     end process readOpCode;
 end Behavioral;

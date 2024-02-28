@@ -162,7 +162,7 @@ begin
             RegTmpRa <= (others => '0');
         elsif rising_edge(ZuluCLK) then
             RegTmpRa <= RaValue;
-                            report "RaValue: " &integer'image(to_integer(unsigned(RaValue)));
+                            --report "RaValue: " &integer'image(to_integer(unsigned(RaValue)));
         end if;
     end process;
 
@@ -172,7 +172,7 @@ begin
                 RegTmpRb <= (others => '0');
             elsif rising_edge(ZuluClk) then
                 RegTmpRb <= RbValue;
-                report "RegTmpRb: " &integer'image(to_integer(unsigned(RbValue)));
+                --report "RegTmpRb: " &integer'image(to_integer(unsigned(RbValue)));
                                     --report "SelAddr: " &std_logic'image(SelAddr);
             end if;
     end process;
