@@ -48,7 +48,7 @@ architecture Behavioral of ControlPath is
     end component;
 
  
-    signal cycle : std_ulogic_vector(2 downto 0) := Cycle_1;
+    signal cycle : std_ulogic_vector(2 downto 0) := Cycle_3;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
     signal instrTerminate : std_ulogic := '0';
@@ -91,10 +91,10 @@ begin
         SelPC <= SelPC_sig;
         ALU_CarryIn <= ALU_CarryIn_sig;
         
-    clockCycle: process(ZuluCLK, RegOpcode, Reset) is
-    variable cyc : std_ulogic_vector(2 downto 0) := Cycle_3;
+    clockCycle: process(ZuluCLK, RegOpcode, Reset, instrTerminate, cycle) is
+    variable cyc : std_ulogic_vector(2 downto 0) := "100";
     begin
-
+        
          if Reset = '1' then
            cyc := Cycle_3;
           report "Reset";
@@ -109,11 +109,9 @@ begin
                         cyc := cyc(1 downto 0) & cyc(2);
                         --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
                         
-                        end if;                                       
+                        end if;    
       end if;
-
-                     cycle <= cyc;
-           
+      cycle <= cyc;
     end process clockCycle;
     
     
@@ -121,14 +119,14 @@ begin
     setFlags: process(carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
     begin
     if cycle = Cycle_2 then
-                                       carryOut_sig <= '0';
-    zeroOut_sig <= '0';
+        carryOut_sig <= '0';
+        zeroOut_sig <= '0';
     
         else 
-        if carryOut_sig = '1' then
+        if ALU_CarryOut = '1' then
             carryOut_sig <= ALU_CarryOut;
         
-        elsif zeroOut_sig = '1' then
+        elsif ALU_ZeroOut = '1' then
             zeroOut_sig <= ALU_ZeroOut;
         end if;
         
@@ -166,8 +164,8 @@ begin
             MemRdStrobe <= rd;
     end process readWriteFlag;
 
-    readOpCode: process(cycle, RegOpCode) is --TODO fix with ZeroOut, CarryOut in sensitivity list
-        variable stop : std_ulogic := '1';
+    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig) is
+        variable stop : std_ulogic := '0';
         variable clkEnPC_var : std_ulogic := '0';
         variable selPC_var : std_ulogic := '0';
         variable aluFunc_var : std_ulogic_vector(3 downto 0) := ALU_DONT_CARE;
@@ -179,6 +177,7 @@ begin
     begin                
         case cycle is
             when Cycle_1 => --increment PC
+                report "Cycle 1";
                 stop := '0';
                 selAddr_var := '0';
                                                         alu_CarryIn_var := '0';
@@ -195,7 +194,7 @@ begin
                          aluFunc_var := "XXXX";
                     when OP_JUMPZ => 
                         report "JUMPZ";
-                        if ALU_ZeroOut = '1' then
+                        if zeroOut_sig = '1' then
                             selPC_var := '0';
                             aluFunc_var := "XXXX";
                         else
@@ -204,11 +203,11 @@ begin
                         end if;
                     when OP_JUMPC =>
                         report "JUMPC";
-                        if ALU_CarryOut = '1' then
+                        if carryOut_sig = '1' then
                             selPC_var := '0';
                             aluFunc_var := "XXXX";
                         else
-                                        report "Cycle 1: Increment PC";
+                                        report "Increment PC";
 
                             selPC_var := '1';
                             aluFunc_var := ALU_A_INC;
@@ -495,7 +494,8 @@ begin
                 selPC_var := 'X';
                 alu_CarryIn_var := 'X';
         end case;      
-                  instrTerminate <= stop;
+                  
+                instrTerminate <= stop;
                   ClkEnOpCode_sig <= stop;
                   ClkEnPC_sig <= clkEnPC_var;
                   SelPC_sig <= selPC_var;
@@ -505,6 +505,5 @@ begin
                   ClkEnRegFile_sig <= clkEnRegFile_var;
                   ALU_CarryIn_sig <= alu_CarryIn_var;  
                   LegalOpcodePresent <= legalOpCode;
-                
     end process readOpCode;
 end Behavioral;
