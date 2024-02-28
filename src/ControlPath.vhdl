@@ -184,52 +184,37 @@ begin
                                                         alu_CarryIn_var := '0';
                                                         clkEnRegFile_var := '0';
                                                                         legalOpCode := '1';
+                                                                                                 clkEnPC_var := '1';
+                         selLoad_var := 'X';
+
 
                 case RegOpCode is
                     when OP_JUMP => 
                          report "JUMP";
                          selPC_var := '0';
-                         clkEnPC_var := '1';
-                         selLoad_var := 'X';
                          aluFunc_var := "XXXX";
                     when OP_JUMPZ => 
                         report "JUMPZ";
                         if ALU_ZeroOut = '1' then
                             selPC_var := '0';
-                            clkEnPC_var := '1';
-                            selLoad_var := 'X';
                             aluFunc_var := "XXXX";
                         else
-                            clkEnPC_var := '1';
                             selPC_var := '1';
-                            alu_CarryIn_var := '0';
-                            selAddr_var := '0';
-                            selLoad_var := 'X';
-                            clkEnRegFile_var := '0';
                             aluFunc_var := ALU_A_INC;
                         end if;
                     when OP_JUMPC =>
                         report "JUMPC";
                         if ALU_CarryOut = '1' then
                             selPC_var := '0';
-                            clkEnPC_var := '1';
-                            selLoad_var := 'X';
                             aluFunc_var := "XXXX";
                         else
                                         report "Cycle 1: Increment PC";
 
-                            clkEnPC_var := '1';
                             selPC_var := '1';
-                            alu_CarryIn_var := '0';
-                            selAddr_var := '0';
-                            selLoad_var := 'X';
-                            clkEnRegFile_var := '0';
                             aluFunc_var := ALU_A_INC;
                         end if; 
                     when others =>
-                        clkEnPC_var := '1';
                         selPC_var := '1';
-                        selLoad_var := 'X';
                         aluFunc_var := ALU_A_INC;
                 end case;                                                     
                                
@@ -252,7 +237,7 @@ begin
                             aluFunc_var := ALU_A_INC;
                             clkEnPC_var := '1';
                             selPC_var := '1';
-
+                            alu_CarryIn_var := '0';
                         when OP_LOAD =>
                             report "LOAD";
                             selAddr_var := '1';
@@ -262,7 +247,7 @@ begin
                             aluFunc_var := ALU_DONT_CARE;
                             clkEnPC_var := '0';
                             selPC_var := 'X';
-
+                            alu_CarryIn_var := 'X';
                         when OP_STORE =>
                             report "STORE";
                             selAddr_var := '1';
@@ -272,24 +257,31 @@ begin
                             aluFunc_var := ALU_DONT_CARE;
                             clkEnPC_var := '0';
                             selPC_var := 'X';
+                            alu_CarryIn_var := 'X';
                         when OP_JUMP =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
-                            clkEnRegFile_var := 'X';
+                            clkEnRegFile_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := 'X';
                         when OP_JUMPC =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
-                            clkEnRegFile_var := 'X';
+                            clkEnRegFile_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := 'X';
                         when OP_JUMPZ =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnPC_var := '0';
-                            clkEnRegFile_var := 'X';
+                            clkEnRegFile_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := 'X';
                         when OP_MOVE =>
                         report "MOVE";
                             aluFunc_var := ALU_SideB;
@@ -297,6 +289,8 @@ begin
                             clkEnRegFile_var := '1';
                             selLoad_var := '0';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_AND =>
                             report "AND";
                             aluFunc_var := ALU_AandB;
@@ -304,6 +298,8 @@ begin
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_OR =>
                             report "OR";
                             aluFunc_var := ALU_AorB;
@@ -311,6 +307,8 @@ begin
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_XOR =>
                             report "XOR";
                             aluFunc_var := ALU_AxorB;
@@ -318,6 +316,8 @@ begin
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_NOT =>
                             report "NOT";
                             aluFunc_var := ALU_NotA;
@@ -325,6 +325,8 @@ begin
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_NOP =>
                             report "NOP";
                             aluFunc_var := "XXXX";
@@ -332,12 +334,17 @@ begin
                             selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_SLEEP =>
                             report "SLEEP";
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
                             selLoad_var := 'X';
                             clkEnRegFile_var := 'X';
+                            clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := 'X';
                             assert false report "Simulation finished" severity failure;
                           when OP_ADD =>
                             report "ADD";
@@ -347,6 +354,7 @@ begin
                             alu_CarryIn_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
                         when OP_ADDC => 
                             report "ADDC";
                             aluFunc_var := ALU_AplusBplusCarry;
@@ -355,6 +363,7 @@ begin
                             alu_CarryIn_var := carryOut_sig;
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
                         when OP_SUB => 
                             report "SUB";
                             aluFunc_var := ALU_AminusBminusCarry;
@@ -363,6 +372,7 @@ begin
                             alu_CarryIn_var := '0';
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
                         when OP_SUBC => 
                             report "SUBC";
                             aluFunc_var := ALU_AminusBminusCarry;
@@ -371,6 +381,7 @@ begin
                             alu_CarryIn_var := carryOut_sig;
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
+                            selAddr_var := '0';
                         when OP_COMP => 
                             report "COMP";
                             aluFunc_var := ALU_AminusBminusCarry;
@@ -378,6 +389,8 @@ begin
                             clkEnPC_var := '0';
                             alu_CarryIn_var := '1';
                             clkEnRegFile_var := '1';
+                            selLoad_var := 'X';
+                            selAddr_var := '0';
                         when OP_INC =>
                             report "INC";
                             aluFunc_var := ALU_A_INC;
@@ -385,6 +398,8 @@ begin
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_DEC =>
                             report "DEC";
                             aluFunc_var := ALU_A_DEC;
@@ -392,6 +407,8 @@ begin
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := '0';
                         when OP_SHL => 
                             report "SHL";
                             aluFunc_var := ALU_ShiftALeft;
@@ -400,6 +417,7 @@ begin
                             clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
                         when OP_SHR =>
                             report "SHR";
                             aluFunc_var := ALU_ShiftARight;
@@ -408,6 +426,7 @@ begin
                             clkEnRegFile_var := '1';
                             alu_CarryIn_var := '0';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
                         when OP_SHRC => 
                             report "SHRC";
                             aluFunc_var := ALU_ShiftARight;
@@ -415,6 +434,8 @@ begin
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := carryOut_sig;
                         when OP_SHLC => 
                             report "SHLC";
                             aluFunc_var := ALU_ShiftALeft;
@@ -422,6 +443,8 @@ begin
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := carryOut_sig;
                         when others =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
@@ -429,6 +452,8 @@ begin
                             clkEnPC_var := '0';
                             legalOpCode := '0';
                             clkEnRegFile_var := 'X';
+                            selAddr_var := '0';
+                            alu_CarryIn_var := 'X';
                             report "Illegal instruction";
                         end case;
             when Cycle_3 =>
@@ -438,6 +463,7 @@ begin
                 clkEnRegFile_var := '0';
                 clkEnPC_var := '0';
                 legalOpCode := '1';
+                alu_CarryIn_var := 'X';
 
                 case RegOpCode is
                     when OP_LOADI =>
@@ -463,7 +489,11 @@ begin
                 legalOpCode := '0';  
                 clkEnPC_var := '0';
                 stop := '1';  
-                clkEnRegFile_var := 'X';
+                clkEnRegFile_var := '0';
+                selLoad_var := 'X';
+                selAddr_var := '0';
+                selPC_var := 'X';
+                alu_CarryIn_var := 'X';
         end case;      
                   instrTerminate <= stop;
                   ClkEnOpCode_sig <= stop;
