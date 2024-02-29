@@ -51,4 +51,20 @@ SLEEP						; end simulation with sleep command
 
 
  :multiply:
-
+LOADI R5, addPart
+LOADI R6, shiftloop
+LOADI R0, number1
+LOAD R0, R0
+LOADI R1, number 2
+LOAD R1, R1
+MOVE R2, R0             ; num1 copy
+MOVE R3, R1             ; num2 copy
+LOADI R4, 0             ; addresult
+:shiftloop:
+SHL R2
+SHR R3
+JUMPC R5
+JUMP R6
+:addPart:
+ADD R4, R2
+JUMP R6
