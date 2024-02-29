@@ -15,7 +15,7 @@ Z1 DPx4 work 14 prol16_package 0 22 [dBU9hdR2VKI6okVKS`=g2
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
 Z4 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
-!i122 3065
+!i122 4650
 Z5 d/home/bernhard/Dokumente/VLSI/PROL16_CPU/Modelsim Sim
 Z6 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl
 Z7 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl
@@ -25,9 +25,9 @@ VF1VWH0Q8JijkQ45^BkN9d1
 !s100 3LIN97jeN@c:UdMkBkmm<0
 Z8 OV;C;2020.1;71
 32
-Z9 !s110 1709027387
+Z9 !s110 1709208552
 !i10b 1
-Z10 !s108 1709027387.000000
+Z10 !s108 1709208552.000000
 Z11 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl|
 Z12 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl|
 !i113 1
@@ -39,7 +39,7 @@ R2
 R3
 R4
 DEx4 work 10 adddatavec 0 22 F1VWH0Q8JijkQ45^BkN9d1
-!i122 3065
+!i122 4650
 l29
 L19 20
 VQ9GlfokLT<V<S1F79@cZc0
@@ -55,12 +55,12 @@ R12
 R13
 R14
 Ealu
-Z15 w1708980653
+Z15 w1709117758
 R1
 Z16 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
 R2
 R3
-!i122 3076
+!i122 4661
 R5
 Z17 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl
 Z18 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl
@@ -70,11 +70,11 @@ V^Y:=BNFZU5Dn@XohhBBlo3
 !s100 ZCzOC5X>Bf=THgA_f4o:_2
 R8
 32
-Z19 !s110 1709027388
+Z19 !s110 1709208553
 !i10b 1
-R10
-Z20 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl|
-Z21 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl|
+Z20 !s108 1709208553.000000
+Z21 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl|
+Z22 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl|
 !i113 1
 R13
 R14
@@ -84,33 +84,33 @@ R16
 R2
 R3
 DEx4 work 3 alu 0 22 ^Y:=BNFZU5Dn@XohhBBlo3
-!i122 3076
+!i122 4661
 l89
 L49 90
-VCJck@7_JdiC9>d33?EDhJ0
-!s100 8_G^cm9P@A1>3F>:G?omX2
+VfdSD_2[J<<Hc`LzY@jB4d0
+!s100 DkklOSJTFZ_]mPQ2dUPR73
 R8
 32
 R19
 !i10b 1
-R10
 R20
 R21
+R22
 !i113 1
 R13
 R14
 Ealu_testbench
-Z22 w1704037523
+Z23 w1704037523
 R1
 R16
 R2
 R3
-!i122 3067
+!i122 4652
 R5
-Z23 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd
-Z24 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd
+Z24 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd
+Z25 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd
 l0
-Z25 L38 1
+Z26 L38 1
 V7^CU78STmWTLMXCYUT0<h2
 !s100 bO^O`MGzAc:Cc9Fln?m<S2
 R8
@@ -118,8 +118,8 @@ R8
 R9
 !i10b 1
 R10
-Z26 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd|
-Z27 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd|
+Z27 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd|
+Z28 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd|
 !i113 1
 R13
 R14
@@ -129,7 +129,7 @@ R16
 R2
 R3
 DEx4 work 13 alu_testbench 0 22 7^CU78STmWTLMXCYUT0<h2
-!i122 3067
+!i122 4652
 l61
 L42 178
 VaBVV1TWW?b0L<]ETZbDnK2
@@ -139,21 +139,21 @@ R8
 R9
 !i10b 1
 R10
-R26
 R27
+R28
 !i113 1
 R13
 R14
 Econtrolpath
-Z28 w1709026512
+Z29 w1709208290
 R1
 R16
 R2
 R3
-!i122 3066
+!i122 4651
 R5
-Z29 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl
-Z30 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl
+Z30 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl
+Z31 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl
 l0
 L11 1
 V9ZbO<U>V1RfN@P;oHgVcB3
@@ -163,8 +163,8 @@ R8
 R9
 !i10b 1
 R10
-Z31 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl|
-Z32 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl|
+Z32 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl|
+Z33 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl|
 !i113 1
 R13
 R14
@@ -174,30 +174,30 @@ R16
 R2
 R3
 DEx4 work 11 controlpath 0 22 9ZbO<U>V1RfN@P;oHgVcB3
-!i122 3066
+!i122 4651
 l85
-L40 428
-VJd^HNc_3QXDjH:7m4DQ?O2
-!s100 R=PdP[^0SM]:JBP:P1[]R3
+L39 510
+V?G4hI9igl>IAd`ShaJ7_j3
+!s100 8cSI1MiJmBhTXC?d9RR=72
 R8
 32
 R9
 !i10b 1
 R10
-R31
 R32
+R33
 !i113 1
 R13
 R14
 Econtrolpath_tb
-Z33 w1707600635
+Z34 w1707600635
 R1
 R2
 R3
-!i122 3068
+!i122 4653
 R5
-Z34 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl
-Z35 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl
+Z35 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl
+Z36 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl
 l0
 L8 1
 VIoK7m9<W@2edHNiOZaTON2
@@ -207,8 +207,8 @@ R8
 R9
 !i10b 1
 R10
-Z36 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl|
-Z37 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl|
+Z37 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl|
+Z38 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl|
 !i113 1
 R13
 R14
@@ -217,7 +217,7 @@ R1
 R2
 R3
 DEx4 work 14 controlpath_tb 0 22 IoK7m9<W@2edHNiOZaTON2
-!i122 3068
+!i122 4653
 l24
 L11 24
 Vi25Q<P^K3MS6@gZaa?blY1
@@ -227,32 +227,32 @@ R8
 R9
 !i10b 1
 R10
-R36
 R37
+R38
 !i113 1
 R13
 R14
 Ecpu
-Z38 w1709024974
+Z39 w1709039894
 R1
 R16
 R2
 R3
-!i122 3064
+!i122 4649
 R5
-Z39 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl
-Z40 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl
+Z40 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl
+Z41 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl
 l0
-Z41 L10 1
-V`W9?k5jaOQd;LMz=]^GQK2
-!s100 F^_PN?^PI:KZ>;J[jSmf33
+Z42 L10 1
+VdOZoZSYVZTAonUz7GBN6U1
+!s100 C0?diX8M]?6R:FfOT=mGb3
 R8
 32
 R9
 !i10b 1
 R10
-Z42 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl|
-Z43 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl|
+Z43 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl|
+Z44 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/CPU.vhdl|
 !i113 1
 R13
 R14
@@ -261,32 +261,32 @@ R1
 R16
 R2
 R3
-DEx4 work 3 cpu 0 22 `W9?k5jaOQd;LMz=]^GQK2
-!i122 3064
-l103
-L30 171
-V6Zf;:Yh9EY0lSZQD8GSOD1
-!s100 n?FU>D4>[HVgM`0DYzFT?2
+DEx4 work 3 cpu 0 22 dOZoZSYVZTAonUz7GBN6U1
+!i122 4649
+l99
+L28 157
+V_hEnUYHD:NWECX<DPRBFP3
+!s100 8;lc8AQNSY?jZm?KR^k_^3
 R8
 32
 R9
 !i10b 1
 R10
-R42
 R43
+R44
 !i113 1
 R13
 R14
 Ecpu_tb
-Z44 w1709024675
+Z45 w1709028214
 R1
 R16
 R2
 R3
-!i122 3069
+!i122 4654
 R5
-Z45 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl
-Z46 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl
+Z46 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl
+Z47 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl
 l0
 L7 1
 V964mM@BZbCg;:j]2WKKk@1
@@ -296,8 +296,8 @@ R8
 R9
 !i10b 1
 R10
-Z47 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl|
-Z48 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl|
+Z48 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl|
+Z49 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl|
 !i113 1
 R13
 R14
@@ -307,42 +307,42 @@ R16
 R2
 R3
 DEx4 work 6 cpu_tb 0 22 964mM@BZbCg;:j]2WKKk@1
-!i122 3069
-l60
-L10 82
-V8Obim=GA8MLWlb@JaHSW42
-!s100 `69BKcZG?PBWN7BV4nL^B1
+!i122 4654
+l43
+L10 58
+V_]^[T3@mKIMBIdiX8E0;H3
+!s100 GBO@aGb9;2]Rf^TmUdRVk0
 R8
 32
 R9
 !i10b 1
 R10
-R47
 R48
+R49
 !i113 1
 R13
 R14
 Edatapath
-Z49 w1709024643
+Z50 w1709203754
 R1
 R16
 R2
 R3
-!i122 3073
+!i122 4658
 R5
-Z50 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl
-Z51 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl
+Z51 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl
+Z52 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl
 l0
 L9 1
-VYL1EP4jQR>bIkoJ5m:m:71
-!s100 IFQC?h;a5>Y<eSC9o>Oz22
+VPe17Qm8Dd<fE59NmBcPL90
+!s100 0X^EzE9mi<X?a^fDF4_lQ1
 R8
 32
-R9
+R19
 !i10b 1
 R10
-Z52 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl|
-Z53 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl|
+Z53 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl|
+Z54 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/DataPath.vhdl|
 !i113 1
 R13
 R14
@@ -351,19 +351,19 @@ R1
 R16
 R2
 R3
-DEx4 work 8 datapath 0 22 YL1EP4jQR>bIkoJ5m:m:71
-!i122 3073
-l113
-L48 168
-VEl6mIoS]hgC0]>2SEoVd83
-!s100 f>kD9CYGPEEBXJ2Hf8?RX1
+DEx4 work 8 datapath 0 22 Pe17Qm8Dd<fE59NmBcPL90
+!i122 4658
+l110
+L46 170
+V2Cf1@LT9oY>V=f6AOQDOH0
+!s100 a:N03eZf:[jTgH1W41b3=0
 R8
 32
-R9
+R19
 !i10b 1
 R10
-R52
 R53
+R54
 !i113 1
 R13
 R14
@@ -378,7 +378,7 @@ R5
 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/datapath_tb.vhdl
 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/datapath_tb.vhdl
 l0
-R25
+R26
 VDDKPR8V>?<c8Uamo>6Q3P0
 !s100 5SICLmfXO<@X@Ef:69`cb2
 R8
@@ -395,11 +395,11 @@ Pmem_pack
 R4
 R2
 R3
-!i122 3062
-Z54 w1708946857
+!i122 4647
+Z55 w1708946857
 R5
-Z55 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd
-Z56 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd
+Z56 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd
+Z57 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd
 l0
 L31 1
 V2zhUWmKBd2[bPR0?l[d;43
@@ -410,17 +410,17 @@ b1
 R9
 !i10b 1
 R10
-Z57 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd|
-Z58 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd|
+Z58 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd|
+Z59 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd|
 !i113 1
 R13
 R14
 Bbody
-Z59 DPx4 work 8 mem_pack 0 22 2zhUWmKBd2[bPR0?l[d;43
+Z60 DPx4 work 8 mem_pack 0 22 2zhUWmKBd2[bPR0?l[d;43
 R4
 R2
 R3
-!i122 3062
+!i122 4647
 l0
 L201 1
 V2KSDJ9lWn1z44oa<>Y[o61
@@ -430,21 +430,21 @@ R8
 R9
 !i10b 1
 R10
-R57
 R58
+R59
 !i113 1
 R13
 R14
 Ememory
-R54
+R55
 R4
-R59
+R60
 R2
 R3
-!i122 3062
+!i122 4647
 R5
-R55
 R56
+R57
 l0
 L2656 1
 V>15Df6KW:<QnejJ1SV`Ph3
@@ -454,18 +454,18 @@ R8
 R9
 !i10b 1
 R10
-R57
 R58
+R59
 !i113 1
 R13
 R14
 Abeh
 R4
-R59
+R60
 R2
 R3
 DEx4 work 6 memory 0 22 >15Df6KW:<QnejJ1SV`Ph3
-!i122 3062
+!i122 4647
 l2691
 L2668 49
 Vh>FAgz5C52bdHm_z6hER>0
@@ -475,21 +475,21 @@ R8
 R9
 !i10b 1
 R10
-R57
 R58
+R59
 !i113 1
 R13
 R14
 Ememory_impl
-R54
+R55
 R4
-R59
+R60
 R2
 R3
-!i122 3062
+!i122 4647
 R5
-R55
 R56
+R57
 l0
 L564 1
 V3YcXeLaE^ZGFaUQS0]C_c1
@@ -499,18 +499,18 @@ R8
 R9
 !i10b 1
 R10
-R57
 R58
+R59
 !i113 1
 R13
 R14
 Amemory_arch
 R4
-R59
+R60
 R2
 R3
 DEx4 work 11 memory_impl 0 22 3YcXeLaE^ZGFaUQS0]C_c1
-!i122 3062
+!i122 4647
 l2457
 L584 2059
 VFCC01kGZeE@2OD<50OYQO1
@@ -520,21 +520,21 @@ R8
 R9
 !i10b 1
 R10
-R57
 R58
+R59
 !i113 1
 R13
 R14
 Ememorytb
-R54
+R55
 R1
 R16
 R2
 R3
-!i122 3063
+!i122 4648
 R5
-Z60 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd
-Z61 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd
+Z61 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd
+Z62 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd
 l0
 L7 1
 VEDZR:?:PFoQ[WJaAREDUg2
@@ -544,8 +544,8 @@ R8
 R9
 !i10b 1
 R10
-Z62 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd|
-Z63 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd|
+Z63 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd|
+Z64 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd|
 !i113 1
 R13
 R14
@@ -555,7 +555,7 @@ R16
 R2
 R3
 DEx4 work 8 memorytb 0 22 EDZR:?:PFoQ[WJaAREDUg2
-!i122 3063
+!i122 4648
 l28
 L10 48
 VZ[=8ISSNVjJM:3bmickEK0
@@ -565,15 +565,15 @@ R8
 R9
 !i10b 1
 R10
-R62
 R63
+R64
 !i113 1
 R13
 R14
 Pprol16_package
 R2
 R3
-!i122 3072
+!i122 4657
 w1708948148
 R5
 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/prol16_package.vhdl
@@ -593,24 +593,24 @@ R10
 R13
 R14
 Eregisterfile
-Z64 w1708969999
+Z65 w1708969999
 R1
 R16
 R2
 R3
-!i122 3077
+!i122 4662
 R5
-Z65 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl
-Z66 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl
+Z66 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl
+Z67 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl
 l0
-R41
+R42
 VV=AefaP6080NCV5W6Ti;H1
 !s100 1i5l4jCgd6<n=6OcHd=a;2
 R8
 32
 R19
 !i10b 1
-Z67 !s108 1709027388.000000
+R20
 Z68 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl|
 Z69 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl|
 !i113 1
@@ -622,7 +622,7 @@ R16
 R2
 R3
 Z70 DEx4 work 12 registerfile 0 22 V=AefaP6080NCV5W6Ti;H1
-!i122 3077
+!i122 4662
 l26
 Z71 L23 29
 Z72 VYm8fSSPV8=kNCZzSE@loW2
@@ -631,7 +631,7 @@ R8
 32
 R19
 !i10b 1
-R67
+R20
 R68
 R69
 !i113 1
@@ -643,12 +643,12 @@ R1
 R16
 R2
 R3
-!i122 3070
+!i122 4655
 R5
 Z75 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/registerfile_tb.vhdl
 Z76 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/registerfile_tb.vhdl
 l0
-R25
+R26
 VN>QNFUhH<c=lCFCiBKo492
 !s100 l:3KcKfAT9HCL;=f7nOBo3
 R8
@@ -667,7 +667,7 @@ R16
 R2
 R3
 DEx4 work 22 registerfile_testbench 0 22 N>QNFUhH<c=lCFCiBKo492
-!i122 3070
+!i122 4655
 l69
 L42 108
 VZn;iW36^5G52ahI1HBDj@1
@@ -688,7 +688,7 @@ R1
 R2
 R3
 R4
-!i122 3074
+!i122 4659
 R5
 Z80 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl
 Z81 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl
@@ -698,9 +698,9 @@ VUZ4cbXUUek^E`kW7CIYZb3
 !s100 VaW[Cf[n]:zmP`43lfXkD1
 R8
 32
-R9
+R19
 !i10b 1
-R10
+R20
 Z82 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl|
 Z83 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl|
 !i113 1
@@ -712,16 +712,16 @@ R2
 R3
 R4
 DEx4 work 9 shiftleft 0 22 UZ4cbXUUek^E`kW7CIYZb3
-!i122 3074
+!i122 4659
 l17
 Z84 L16 5
 V<PnY`P^8FhJ7V84FVfdYi3
 !s100 lTOKmbATLO3gTC[_YJg@T3
 R8
 32
-R9
+R19
 !i10b 1
-R10
+R20
 R82
 R83
 !i113 1
@@ -733,7 +733,7 @@ R1
 R2
 R3
 R4
-!i122 3075
+!i122 4660
 R5
 Z86 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl
 Z87 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl
@@ -743,9 +743,9 @@ V3RXmG7DBO^m;Q8<dU4dnI3
 !s100 UQ1]e;W_LaZ@h56nncoc22
 R8
 32
-R9
+R19
 !i10b 1
-R10
+R20
 Z88 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|/home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl|
 Z89 !s107 /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl|
 !i113 1
@@ -757,16 +757,16 @@ R2
 R3
 R4
 DEx4 work 10 shiftright 0 22 3RXmG7DBO^m;Q8<dU4dnI3
-!i122 3075
+!i122 4660
 l17
 R84
 V^O5UO<RK=BHXDnhe]hi@C0
 !s100 ?3:M:A8V1;QX2RdT38=fJ1
 R8
 32
-R9
+R19
 !i10b 1
-R10
+R20
 R88
 R89
 !i113 1
@@ -778,7 +778,7 @@ R1
 R16
 R2
 R3
-!i122 3071
+!i122 4656
 R5
 8/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl
 F/home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl

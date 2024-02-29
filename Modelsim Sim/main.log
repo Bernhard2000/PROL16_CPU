@@ -15,7 +15,7 @@
   15  :start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
   16  LOADI R3, loop_start             ;
   17  LOADI R2, end               ;
-  18  LOADI R5, passed1           ;
+  18  LOADI R5, passed           ;
   19  LOADI R7, start             ;
   20  LOAD R0, R6					; load first number into R0
   21  INC R6                      ;
@@ -28,23 +28,39 @@
   28  XOR R0, R1                  ; 4
   29  NOT R0                      ; 65531
   30  ADD R0, R4                  ; 0
-  31  JUMPZ R5
-  32  JUMP R7                     ; infinite loop if result doesnt match
-  33  :passed1:
-  34  LOAD R0, R6					; load first number back into R0
-  35  INC R6                      ;
-  36  LOAD R1, R6                 ;
-  37  :loop_start:                ;
-  38  DEC R0                      ;
-  39  JUMPZ R2                    ;
-  40  JUMP R3                     ;
-  41  :end:                       ;
-  42  INC R6						; increment address counter
-  43  STORE R0, R6					; store result in RAM (Adress: 08002h)
-  44  LOADI R3, startAddress				; dump memory snapshot in hex file
-  45  LOADI R4, 0FFFFh
-  46  STORE R3, R4
-  47  SLEEP						; end simulation with sleep command
+  31  INC R0                      ;
+  32  SHL R0                      ; 2
+  33  SHL R0                      ; 4
+  34  SUB R0, R4                      ; -1
+  35  INC R0                      ;0
+  36  INC R0                      ;1
+  37  SHLC R0                     ;2
+  38  SHLC R0                     ;4
+  39  SHLC R0                     ;8
+  40  SHLC R0                     ;16
+  41  SHLC R0                     ;32
+  42  SHLC R0                     ;64
+  43  SUB R0, R1                  ; 64-25=39, CARRY
+  44  SUB R0, R1                  ; 39-25=14, CARRY
+  45  ADDC R0, R1                  ; 14 + 25 + 1 = 40
+  46  LOADI R4, 40
+  47  COMP R0, R4
+  48  JUMPZ R5                    ;
+  49  JUMP R7                     ; infinite loop if result doesnt match
+  50  :passed:                    ;
+  51  LOAD R0, R6					; load first number back into R0
+  52  INC R6                      ;
+  53  LOAD R1, R6                 ;
+  54  :loop_start:                ;
+  55  DEC R0                      ;
+  56  JUMPZ R2                    ;
+  57  JUMP R3                     ;
+  58  :end:                       ;
+  59  STORE R0, R6					; store result in RAM (Adress: 08002h)
+  60  LOADI R3, startAddress				; dump memory snapshot in hex file
+  61  LOADI R4, 0FFFFh
+  62  STORE R3, R4
+  63  SLEEP						; end simulation with sleep command
 
 
       Assembling complete : found 000 Errors
@@ -53,9 +69,9 @@
       Labels              Address
       ---------------------------
       START               0002h
-      LOOP_START          001Ah
-      END                 001Dh
-      PASSED1             0017h
+      LOOP_START          002Ch
+      END                 002Fh
+      PASSED              0029h
 
       Constants           Value  
       ---------------------------
@@ -66,9 +82,9 @@
       ------------------------------------
 
 0000hex  LOADI   R6, 8000hex            000010_00110_00000  1000000000000000
-0002hex  LOADI   R3, 001Ahex            000010_00011_00000  0000000000011010
-0004hex  LOADI   R2, 001Dhex            000010_00010_00000  0000000000011101
-0006hex  LOADI   R5, 0017hex            000010_00101_00000  0000000000010111
+0002hex  LOADI   R3, 002Chex            000010_00011_00000  0000000000101100
+0004hex  LOADI   R2, 002Fhex            000010_00010_00000  0000000000101111
+0006hex  LOADI   R5, 0029hex            000010_00101_00000  0000000000101001
 0008hex  LOADI   R7, 0002hex            000010_00111_00000  0000000000000010
 000Ahex  LOAD    R0, R6                 000011_00000_00110
 000Bhex  INC     R6                     011010_00110_00000
@@ -81,20 +97,36 @@
 0012hex  XOR     R0, R1                 010010_00000_00001
 0013hex  NOT     R0                     010011_00000_00000
 0014hex  ADD     R0, R4                 010100_00000_00100
-0015hex  JUMPZ   R5                     001011_00101_00000
-0016hex  JUMP    R7                     001000_00111_00000
-0017hex  LOAD    R0, R6                 000011_00000_00110
-0018hex  INC     R6                     011010_00110_00000
-0019hex  LOAD    R1, R6                 000011_00001_00110
-001Ahex  DEC     R0                     011011_00000_00000
-001Bhex  JUMPZ   R2                     001011_00010_00000
-001Chex  JUMP    R3                     001000_00011_00000
-001Dhex  INC     R6                     011010_00110_00000
-001Ehex  STORE   R0, R6                 000100_00000_00110
-001Fhex  LOADI   R3, 8000hex            000010_00011_00000  1000000000000000
-0021hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
-0023hex  STORE   R3, R4                 000100_00011_00100
-0024hex  SLEEP                          000001_00000_00000
+0015hex  INC     R0                     011010_00000_00000
+0016hex  SHL     R0                     011100_00000_00000
+0017hex  SHL     R0                     011100_00000_00000
+0018hex  SUB     R0, R4                 010110_00000_00100
+0019hex  INC     R0                     011010_00000_00000
+001Ahex  INC     R0                     011010_00000_00000
+001Bhex  SHLC    R0                     011110_00000_00000
+001Chex  SHLC    R0                     011110_00000_00000
+001Dhex  SHLC    R0                     011110_00000_00000
+001Ehex  SHLC    R0                     011110_00000_00000
+001Fhex  SHLC    R0                     011110_00000_00000
+0020hex  SHLC    R0                     011110_00000_00000
+0021hex  SUB     R0, R1                 010110_00000_00001
+0022hex  SUB     R0, R1                 010110_00000_00001
+0023hex  ADDC    R0, R1                 010101_00000_00001
+0024hex  LOADI   R4, 0028hex            000010_00100_00000  0000000000101000
+0026hex  COMP    R0, R4                 011000_00000_00100
+0027hex  JUMPZ   R5                     001011_00101_00000
+0028hex  JUMP    R7                     001000_00111_00000
+0029hex  LOAD    R0, R6                 000011_00000_00110
+002Ahex  INC     R6                     011010_00110_00000
+002Bhex  LOAD    R1, R6                 000011_00001_00110
+002Chex  DEC     R0                     011011_00000_00000
+002Dhex  JUMPZ   R2                     001011_00010_00000
+002Ehex  JUMP    R3                     001000_00011_00000
+002Fhex  STORE   R0, R6                 000100_00000_00110
+0030hex  LOADI   R3, 8000hex            000010_00011_00000  1000000000000000
+0032hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
+0034hex  STORE   R3, R4                 000100_00011_00100
+0035hex  SLEEP                          000001_00000_00000
 
 
       Contents of Memory: Working RAM

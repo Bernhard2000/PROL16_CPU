@@ -159,28 +159,18 @@ begin
  
     
     
-    --TODO carry and zezo flags
+    --TODO carry and zero flags
     setFlags: process(ZuluCLK, carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
     begin
         if rising_edge(ZuluCLK) then
-            
-            if ALU_CarryOut = '0' and ALU_ZeroOut = '1' then
-                            zeroOut_sig <= ALU_ZeroOut;
-            elsif ALU_CarryOut = '1' and ALU_ZeroOut = '0' then
-                carryOut_sig <= ALU_CarryOut;  
-                                  elsif ALU_CarryOut = '1' and ALU_ZeroOut = '1' then
-            zeroOut_sig <= ALU_ZeroOut;
-                            carryOut_sig <= ALU_CarryOut;  
-            elsif cycle = Cycle_1 then
-                carryOut_sig <= '0';
-                zeroOut_sig <= '0';
-                
+            if cycle = Cycle_2 then
+                    carryOut_sig <= ALU_CarryOut;
+                    zeroOut_sig <= ALU_ZeroOut;
             else 
                 carryOut_sig <= carryOut_sig;
                 zeroOut_sig <= zeroOut_sig;
         end if;   
-        end if; 
-        
+       end if; 
     end process;
     
     --readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is --TODO make function

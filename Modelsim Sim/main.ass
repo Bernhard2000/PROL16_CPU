@@ -15,7 +15,7 @@ LOADI R6, startAddress				; load start address of data section of RAM  into R6
 :start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
 LOADI R3, loop_start             ;
 LOADI R2, end               ;
-LOADI R5, passed1           ;
+LOADI R5, passed           ;
 LOADI R7, start             ;
 LOAD R0, R6					; load first number into R0
 INC R6                      ;
@@ -28,9 +28,26 @@ OR R0, R1                   ; 29
 XOR R0, R1                  ; 4
 NOT R0                      ; 65531
 ADD R0, R4                  ; 0
-JUMPZ R5
+INC R0                      ;
+SHL R0                      ; 2
+SHL R0                      ; 4
+SUB R0, R4                      ; -1
+INC R0                      ;0
+INC R0                      ;1
+SHLC R0                     ;2
+SHLC R0                     ;4
+SHLC R0                     ;8
+SHLC R0                     ;16
+SHLC R0                     ;32
+SHLC R0                     ;64
+SUB R0, R1                  ; 64-25=39, CARRY
+SUB R0, R1                  ; 39-25=14, CARRY
+ADDC R0, R1                  ; 14 + 25 + 1 = 40
+LOADI R4, 40
+COMP R0, R4
+JUMPZ R5                    ;
 JUMP R7                     ; infinite loop if result doesnt match
-:passed1:
+:passed:                    ;
 LOAD R0, R6					; load first number back into R0
 INC R6                      ;
 LOAD R1, R6                 ;
@@ -39,7 +56,6 @@ DEC R0                      ;
 JUMPZ R2                    ;
 JUMP R3                     ;
 :end:                       ;
-INC R6						; increment address counter
 STORE R0, R6					; store result in RAM (Adress: 08002h)
 LOADI R3, startAddress				; dump memory snapshot in hex file
 LOADI R4, 0FFFFh

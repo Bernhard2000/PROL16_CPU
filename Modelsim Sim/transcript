@@ -15,4 +15,5 @@
 # Compile of Shiftleft.vhdl was successful.
 # Compile of Shiftright.vhdl was successful.
 # Compile of ALU.vhdl was successful.
-# 17 compiles, 3 failed with 12 errors.
+# Compile of registerfile.vhdl was successful.
+# 18 compiles, 3 failed with 12 errors.
