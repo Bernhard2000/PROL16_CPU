@@ -61,10 +61,11 @@ MOVE R2, R0             ; num1 copy
 MOVE R3, R1             ; num2 copy
 LOADI R4, 0             ; addresult
 :shiftloop:
-SHL R2
 SHR R3
 JUMPC R5
+SHL R2
 JUMP R6
 :addPart:
 ADD R4, R2
+SHL R2
 JUMP R6

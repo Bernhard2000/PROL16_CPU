@@ -107,6 +107,7 @@ begin
          if Reset = '1' then
           nextCycle <= Cycle_1;
           stop := '1';
+          instrTerminate <= '1';
           MemWrStrobe <= '0';
           MemRdStrobe <= '1';
           report "Reset";
@@ -140,7 +141,7 @@ begin
                                   MemWrStrobe <= '0';                                                                                
                                   MemRdStrobe <= '1';
                          end case; 
-                                                                              instrTerminate <= stop;
+                    instrTerminate <= stop;
 
                     if stop = '1' then
                         --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
@@ -164,8 +165,17 @@ begin
     begin
         if rising_edge(ZuluCLK) then
             if cycle = Cycle_2 then
+                case RegOpCode is
+                when OP_AND | OP_OR | OP_XOR | OP_NOT =>
+                    carryOut_sig <= '0';
+                    zeroOut_sig <= ALU_ZeroOut;
+                when OP_ADD | OP_ADDC | OP_SUB | OP_SUBC | OP_COMP | OP_INC | OP_DEC | OP_SHL | OP_SHR | OP_SHLC | OP_SHRC => 
                     carryOut_sig <= ALU_CarryOut;
                     zeroOut_sig <= ALU_ZeroOut;
+                when others => 
+                    carryOut_sig <= carryOut_sig;
+                    zeroOut_sig <= zeroOut_sig;
+                end case;
             else 
                 carryOut_sig <= carryOut_sig;
                 zeroOut_sig <= zeroOut_sig;
@@ -202,7 +212,7 @@ begin
             
   --  end process readWriteFlag;
 
-    readOpCode: process(nextCycle, RegOpCode, zeroOut_sig, carryOut_sig) is
+    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig) is
         variable stop : std_ulogic := '0';
         variable cyc : std_ulogic_vector(2 downto 0) := "001";
         variable clkEnPC_var : std_ulogic := '0';
