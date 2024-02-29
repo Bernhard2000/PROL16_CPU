@@ -112,6 +112,8 @@ begin
     --            cycle <= cyc;
 
 --    end process clockCycle;
+
+ 
     
     
     --TODO carry and zezo flags
@@ -138,36 +140,33 @@ begin
         
     end process;
     
-    readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is
-    variable rd : std_ulogic := '1';
-    variable wr : std_ulogic := '0';
+    readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is --TODO make function
     begin
         if rising_edge(ZuluCLK) then
             case cycle is
                 when Cycle_1 =>
-                    rd := '0';
-                    wr := '0';
+                    MemWrStrobe <= '0';
+                    MemRdStrobe <= '0';
                 when Cycle_2 =>
                     if RegOpCode =  OP_STORE then
-                        wr := '1';
-                        rd := '0';
+                        MemWrStrobe <= '1';
+                        MemRdStrobe <= '0';
                      else
-                        wr := '0';
-                        rd := '1';
+                        MemWrStrobe <= '0';
+                        MemRdStrobe <= '1';
                      end if;
                 when Cycle_3 =>
 
-                    wr := '0';
-                    rd := '1';
+                    MemWrStrobe <= '0';
+                    MemRdStrobe <= '1';
                 when others =>
                     report "Unreachable clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
-                    wr := '0';
-                    rd := '1';
+                    MemWrStrobe <= '0';
+                    MemRdStrobe <= '1';
             end case;
             
             end if;
-            MemWrStrobe <= wr;
-                        MemRdStrobe <= rd;
+            
     end process readWriteFlag;
 
     readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig, ZuluCLK) is
@@ -504,19 +503,17 @@ begin
                 alu_CarryIn_var := 'X';
                 stop := '1';
         end case;      
-                                        cycle <= clock_cycle(cycle, stop);
-ClkEnOpCode_sig <= stop;
-                                                                                ClkEnPC_sig <= clkEnPC_var;
-                                                                                SelPC_sig <= selPC_var;
-                                                                                AluFunc <= aluFunc_var;
-                                                                                SelAddr_sig <= selAddr_var;
-                                                                                SelLoad_sig <= selLoad_var;
-                                                                                ClkEnRegFile_sig <= clkEnRegFile_var;
-                                                                                ALU_CarryIn_sig <= alu_CarryIn_var;  
-                                                                                LegalOpcodePresent <= legalOpCode;
-                
                       end if;
+                              cycle <= clock_cycle(cycle, stop);
 instrTerminate <= stop;
-                                        
+                                        ClkEnOpCode_sig <= stop;
+                                        ClkEnPC_sig <= clkEnPC_var;
+                                        SelPC_sig <= selPC_var;
+                                        AluFunc <= aluFunc_var;
+                                        SelAddr_sig <= selAddr_var;
+                                        SelLoad_sig <= selLoad_var;
+                                        ClkEnRegFile_sig <= clkEnRegFile_var;
+                                        ALU_CarryIn_sig <= alu_CarryIn_var;  
+                                        LegalOpcodePresent <= legalOpCode;
     end process readOpCode;
 end Behavioral;
