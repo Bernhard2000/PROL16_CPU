@@ -101,12 +101,11 @@ signal AluResult_sig : DataVec;
 signal RaValue, RbValue : DataVec := (others => '0');
 signal aluSideA : DataVec := (others => '0');
 signal regPC : DataVec := (others => '0');
-signal RegFileIn : DataVec;
+signal RegFileIn : DataVec := (others => '0');
 signal RegTmpRa, RegTmpRb : DataVec := (others => '0');
 signal RegSelRa : std_ulogic_vector(RegFileBits-1 downto 0);
 signal RegSelRb : std_ulogic_vector(RegFileBits-1 downto 0);
 signal RegOpcode_sig : OpcodeVec := (others => '0');
-signal RegOpcode_sig_s : OpcodeVec := (others => '0');
 
 begin
 
@@ -186,26 +185,27 @@ begin
         variable opcodeValue : OpcodeValueType := OpcodeValueType_default;
     begin
         if Reset = ResetActive then
-            RegOpcode <= (others => '0');
+            RegOpcode_sig <= (others => '0');
             RegSelRa <= (others => '0');
             RegSelRb <= (others => '0');
         elsif rising_edge(ZuluClk) then
                 --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
             if ClkEnOpcode = '1' then
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
-                RegOpcode <= opcodeValue.Code;
+                RegOpcode_sig <= opcodeValue.Code;
                         RegSelRa <= opcodeValue.Ra;
                         RegSelRb <= opcodeValue.Rb;
                 --report "DataPath: Ra: "&integer'image(to_integer(unsigned(opcodeValue.Ra))) & "Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
             else 
-                RegOpcode <= RegOpcode_sig;
+                RegOpcode_sig <= RegOpcode_sig;
                 RegSelRa <= RegSelRa;
                 RegSelRb <= RegSelRb;
             end if;
         end if;
 
     end process;
-       
+                   RegOpcode <= RegOpcode_sig;
+    
 
     With SelAddr select MemAddr <= RegPC when '0', RegTmpRb when '1', (others => 'X') when others;
  

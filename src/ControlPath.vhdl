@@ -48,6 +48,7 @@ architecture Behavioral of ControlPath is
 
  
     signal cycle : std_ulogic_vector(2 downto 0) := Cycle_3;
+    signal nextCycle : std_ulogic_vector(2 downto 0) := Cycle_1;
     signal ClkEnPC_sig, ClkEnRegFile_sig, SelPC_sig, SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
     signal instrTerminate : std_ulogic := '0';
@@ -86,32 +87,74 @@ begin
         ClkEnPC <= ClkEnPC_sig;
         ClkEnRegFile <= ClkEnRegFile_sig;
         SelLoad <= SelLoad_sig;
-        ClkEnOpcode <= ClkEnOpcode_sig;
+        ClkEnOpcode <= instrTerminate;
         SelPC <= SelPC_sig;
         ALU_CarryIn <= ALU_CarryIn_sig;
         
-    --clockCycle: process(ZuluCLK, Reset) is
-    --variable cyc : std_ulogic_vector(2 downto 0) := "100";
-    --begin
-    --    
-    --     if Reset = '1' then
-    --       cyc := Cycle_3;
-    --      report "Reset";
-    --    elsif rising_edge(ZuluClk) then --TODO mit variablen
-    --                if instrTerminate = '1' then
-    --                    --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
-    --                                                cyc := Cycle_1;
-    --                      --                          report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(cyc))); 
-    --                                                else
-    --                    --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
-    --                    cyc := cyc(1 downto 0) & cyc(2);
-    --                    --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));   
-    --                    
-    --                    end if;    
-    --  end if;
-    --            cycle <= cyc;
+        
+    setCycle : process(ZuluCLK, Reset, nextCycle) is
+    begin
+              if reset = '1' then
+                    cycle <= Cycle_3;
+              elsif rising_edge(ZuluCLK) then
+                    cycle <= nextCycle;
+              end if;
+   end process;
+        
+    setNextCycle: process(Reset, RegOpcode, cycle) is
+    variable stop : std_ulogic := '0';
+    begin        
+         if Reset = '1' then
+          nextCycle <= Cycle_1;
+          stop := '1';
+          MemWrStrobe <= '0';
+          MemRdStrobe <= '1';
+          report "Reset";
+          else
+          case cycle is
+                              when Cycle_1 =>
+                                  stop := '0';
+                                  MemWrStrobe <= '0';
+                                  MemRdStrobe <= '0';
+                              when Cycle_2 =>
+                                  case RegOpcode is 
+                                      when OP_STORE => 
+                                          MemWrStrobe <= '1';
+                                          MemRdStrobe <= '0';
+                                          stop := '0';
+                                      when OP_LOADI | OP_LOAD =>
+                                          stop := '0';
+                                          MemWrStrobe <= '0';
+                                          MemRdStrobe <= '1';
+                                      when others =>
+                                          stop := '1';
+                                          MemWrStrobe <= '0';
+                                                                                          MemRdStrobe <= '1';
+                                      end case;                
+                              when Cycle_3 =>
+                                  stop := '1';
+                                                          MemWrStrobe <= '0';
+                                                          MemRdStrobe <= '1';
+                              when others => 
+                                  stop := '1';
+                                  MemWrStrobe <= '0';                                                                                
+                                  MemRdStrobe <= '1';
+                         end case; 
+                                                                              instrTerminate <= stop;
 
---    end process clockCycle;
+                    if stop = '1' then
+                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                                                    nextCycle <= Cycle_1;
+                                                    stop := '0';
+                                                    report "Terminated, New clock cycle: " & integer'image(to_integer(unsigned(nextCycle))); 
+                    else
+                        --report "Old cycle: " & integer'image(to_integer(unsigned(cyc))); 
+                        nextCycle <= cycle(1 downto 0) & cycle(2);
+                        --report "New clock cycle: " & integer'image(to_integer(unsigned(cyc)));                          
+                        end if;  
+               
+               end if;
+    end process;
 
  
     
@@ -140,36 +183,36 @@ begin
         
     end process;
     
-    readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is --TODO make function
-    begin
-        if rising_edge(ZuluCLK) then
-            case cycle is
-                when Cycle_1 =>
-                    MemWrStrobe <= '0';
-                    MemRdStrobe <= '0';
-                when Cycle_2 =>
-                    if RegOpCode =  OP_STORE then
-                        MemWrStrobe <= '1';
-                        MemRdStrobe <= '0';
-                     else
-                        MemWrStrobe <= '0';
-                        MemRdStrobe <= '1';
-                     end if;
-                when Cycle_3 =>
+    --readWriteFlag: process(ZuluCLK, cycle, RegOpCode) is --TODO make function
+    --begin
+    --    if rising_edge(ZuluCLK) then
+    --        case cycle is
+    --            when Cycle_1 =>
+    --                MemWrStrobe <= '0';
+    --                MemRdStrobe <= '0';
+    --            when Cycle_2 =>
+     --               if RegOpCode =  OP_STORE then
+    --                    MemWrStrobe <= '1';
+    --                    MemRdStrobe <= '0';
+    --                 else
+    --                    MemWrStrobe <= '0';
+    --                    MemRdStrobe <= '1';
+    --                 end if;
+    --            when Cycle_3 =>
 
-                    MemWrStrobe <= '0';
-                    MemRdStrobe <= '1';
-                when others =>
-                    report "Unreachable clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
-                    MemWrStrobe <= '0';
-                    MemRdStrobe <= '1';
-            end case;
+     --               MemWrStrobe <= '0';
+     --               MemRdStrobe <= '1';
+      --          when others =>
+      --              report "Unreachable clock cycle: " & integer'image(to_integer(unsigned(cycle))); 
+      --              MemWrStrobe <= '0';
+       --             MemRdStrobe <= '1';
+       --     end case;
             
-            end if;
+      --      end if;
             
-    end process readWriteFlag;
+  --  end process readWriteFlag;
 
-    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig, ZuluCLK) is
+    readOpCode: process(nextCycle, RegOpCode, zeroOut_sig, carryOut_sig, ZuluCLK) is
         variable stop : std_ulogic := '0';
         variable cyc : std_ulogic_vector(2 downto 0) := "001";
         variable clkEnPC_var : std_ulogic := '0';
@@ -182,7 +225,7 @@ begin
         variable legalOpCode : std_ulogic := '1';
     begin                
         if rising_edge(ZuluCLK) then
-        case cycle is
+        case nextCycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1";
                 stop := '0';
@@ -311,7 +354,7 @@ begin
                             report "OR";
                             aluFunc_var := ALU_AorB;
                             selPC_var := '0';
-
+                            selLoad_var := '0';
                             clkEnPC_var := '0';
                             clkEnRegFile_var := '1';
                             selAddr_var := '0';
@@ -495,7 +538,6 @@ begin
                 aluFunc_var := "XXXX";  
                 legalOpCode := '0';  
                 clkEnPC_var := '0';
-                instrTerminate <= '1';  
                 clkEnRegFile_var := '0';
                 selLoad_var := 'X';
                 selAddr_var := '0';
@@ -504,9 +546,8 @@ begin
                 stop := '1';
         end case;      
                       end if;
-                              cycle <= clock_cycle(cycle, stop);
-instrTerminate <= stop;
-                                        ClkEnOpCode_sig <= stop;
+                              --cycle <= clock_cycle(cycle, stop);
+--instrTerminate <= stop;
                                         ClkEnPC_sig <= clkEnPC_var;
                                         SelPC_sig <= selPC_var;
                                         AluFunc <= aluFunc_var;
