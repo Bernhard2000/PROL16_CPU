@@ -212,7 +212,7 @@ begin
             
   --  end process readWriteFlag;
 
-    readOpCode: process(nextCycle, RegOpCode, zeroOut_sig, carryOut_sig, ZuluCLK) is
+    readOpCode: process(nextCycle, RegOpCode, zeroOut_sig, carryOut_sig) is
         variable stop : std_ulogic := '0';
         variable cyc : std_ulogic_vector(2 downto 0) := "001";
         variable clkEnPC_var : std_ulogic := '0';
@@ -224,8 +224,7 @@ begin
         variable alu_CarryIn_var : std_ulogic := '0';
         variable legalOpCode : std_ulogic := '1';
     begin                
-        if rising_edge(ZuluCLK) then
-        case nextCycle is
+        case cycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1";
                 stop := '0';
@@ -545,7 +544,6 @@ begin
                 alu_CarryIn_var := 'X';
                 stop := '1';
         end case;      
-                      end if;
                               --cycle <= clock_cycle(cycle, stop);
 --instrTerminate <= stop;
                                         ClkEnPC_sig <= clkEnPC_var;
