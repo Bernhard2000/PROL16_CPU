@@ -186,20 +186,24 @@ begin
         variable opcodeValue : OpcodeValueType := OpcodeValueType_default;
     begin
         if Reset = ResetActive then
-            RegOpcode_sig <= (others => '0');
+            RegOpcode <= (others => '0');
             RegSelRa <= (others => '0');
             RegSelRb <= (others => '0');
         elsif rising_edge(ZuluClk) then
                 --report "Test: CLKEnOpcode: " &std_logic'image(ClkEnOpcode);
             if ClkEnOpcode = '1' then
                 opcodeValue := ulogic_vector_to_OpcodeValueType(MemRdData);
-                RegOpcode_sig <= opcodeValue.Code;
+                RegOpcode <= opcodeValue.Code;
                         RegSelRa <= opcodeValue.Ra;
                         RegSelRb <= opcodeValue.Rb;
                 --report "DataPath: Ra: "&integer'image(to_integer(unsigned(opcodeValue.Ra))) & "Rb: " &integer'image(to_integer(unsigned(opcodeValue.Rb)));
+            else 
+                RegOpcode <= RegOpcode_sig;
+                RegSelRa <= RegSelRa;
+                RegSelRb <= RegSelRb;
             end if;
         end if;
-        
+
     end process;
        
 
@@ -207,6 +211,5 @@ begin
  
     AluSideA <= RegTmpRa when SelPC = '0' else RegPC;
     MemWrData <= RegTmpRa;
-    RegOpcode <= RegOpcode_sig;
 
 end Behavioral;
