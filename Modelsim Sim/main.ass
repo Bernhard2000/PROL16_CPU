@@ -30,8 +30,48 @@ DB 1285, 51                   ;
 ORG 0A020h                  ;
 DB 256, 256                   ;
 
-;0*0 ends loop
+
+;65535*65535, highest possible number
 ORG 0A028h                  ;
+DB 65535, 65535
+
+ORG 0A030h
+DB 12, 12
+
+ORG 0A038h
+DB 16383, 2
+
+ORG 0A040h
+DB 2048, 8
+
+ORG 0A048h
+DB 1, 0
+
+ORG 0A050h
+DB 8192, 8191
+
+ORG 0A058h
+DB 255, 255
+
+
+ORG 0A060h
+DB 16, 16
+
+
+ORG 0A068h
+DB 3, 16383
+
+
+ORG 0A070h
+DB 0, 32767
+
+
+;2048*480 = 983040, all 0 in lower part
+ORG 0A078h
+DB 2048, 480
+
+;0*0 ends loop
+ORG 0A080h                  ;
 DB 0, 0                     ;
 
 
@@ -44,10 +84,9 @@ ORG 0000h					; reset address for programm code
 LOADI R1, startAddress      ; R1 = Adress that stores address of first number
 LOAD R1, R1                 ; load Address of next number
 LOAD R0, R1                 ; load number1
+LOADI R6, 1
 INC R1
 LOAD R1, R1                 ; load number2
-LOADI R5, addPart
-LOADI R6, shiftloop
 LOADI R2, 0             ; resultlower = 0
 LOADI R3, 0             ; resulthigher = 0
 LOADI R7, 0             ; constant 0 for adding carry of result1 to result2
@@ -58,19 +97,24 @@ LOADI R4, end           ; end program if 0*0 is detected
 JUMPZ R4
 LOADI R4, endloop
 :shiftloop:
+LOADI R5, addPart
 SHR R1                  ; number2 >> 1
 JUMPC R5                ; if number2[0] == 1 then result1 = result1 + number1
 JUMPZ R4
 SHL R0                  ; number1 << 1
-ADDC R3, R7             ; result2 = result2 + carry
-JUMP R6
+SHLC R6
+LOADI R5, shiftloop
+JUMP R5
 :addPart:
 ADD R2, R0              ; result1 = result1 + number1
-ADDC R3, R7             ; result2 = result2 + carry
+ADDC R6, R7
+ADD R3, R6
 SHL R0                  ; number1 << 1
-JUMP R6
+SHLC R6
+LOADI R5, shiftloop
+JUMP R5
 :endloop:
-LOADI R1, startAddress				; load start address of data section of RAM  into R6
+LOADI R1, startAddress				; load start address of data section of RAM  into R1
 LOAD R0, R1
 INC R0
 INC R0                              ; R1 = address of result1

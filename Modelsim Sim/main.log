@@ -30,64 +30,108 @@
   30  ORG 0A020h                  ;
   31  DB 256, 256                   ;
   32  
-  33  ;0*0 ends loop
-  34  ORG 0A028h                  ;
-  35  DB 0, 0                     ;
-  36  
+  33  
+  34  ;65535*65535, highest possible number
+  35  ORG 0A028h                  ;
+  36  DB 65535, 65535
   37  
-  38  ORG 0000h					; reset address for programm code
-  39  
+  38  ORG 0A030h
+  39  DB 12, 12
   40  
-  41  
-  42  
-  43   :multiply:
-  44  LOADI R1, startAddress      ; R1 = Adress that stores address of first number
-  45  LOAD R1, R1                 ; load Address of next number
-  46  LOAD R0, R1                 ; load number1
-  47  INC R1
-  48  LOAD R1, R1                 ; load number2
-  49  LOADI R5, addPart
-  50  LOADI R6, shiftloop
-  51  LOADI R2, 0             ; resultlower = 0
-  52  LOADI R3, 0             ; resulthigher = 0
-  53  LOADI R7, 0             ; constant 0 for adding carry of result1 to result2
-  54  MOVE R4, R0             ; R4=R2
-  55  OR R4, R1               ; R2 OR R3
-  56  COMP R4, R7
-  57  LOADI R4, end           ; end program if 0*0 is detected
-  58  JUMPZ R4
-  59  LOADI R4, endloop
-  60  :shiftloop:
-  61  SHR R1                  ; number2 >> 1
-  62  JUMPC R5                ; if number2[0] == 1 then result1 = result1 + number1
-  63  JUMPZ R4
-  64  SHL R0                  ; number1 << 1
-  65  ADDC R3, R7             ; result2 = result2 + carry
-  66  JUMP R6
-  67  :addPart:
-  68  ADD R2, R0              ; result1 = result1 + number1
-  69  ADDC R3, R7             ; result2 = result2 + carry
-  70  SHL R0                  ; number1 << 1
-  71  JUMP R6
-  72  :endloop:
-  73  LOADI R1, startAddress				; load start address of data section of RAM  into R6
-  74  LOAD R0, R1
-  75  INC R0
-  76  INC R0                              ; R1 = address of result1
-  77  STORE R3, R0                        ; store resulthigher
-  78  INC R0
-  79  STORE R2, R0                        ; store resultlower
-  80  LOADI R2, 5                         ; increase address by 8 in total (5 + 3 INC)
-  81  ADD R0, R2
-  82  STORE R0, R1                        ; store next address in 08000h
-  83  LOADI R0, multiply
-  84  JUMP R0                             ;repeat loop
-  85  :end:
-  86  LOADI R3, numbersAddr				; dump memory snapshot in hex file
-  87  LOADI R4, 0FFFFh
-  88  STORE R3, R4
-  89  SLEEP						; end simulation with sleep command
-  90  
+  41  ORG 0A038h
+  42  DB 16383, 2
+  43  
+  44  ORG 0A040h
+  45  DB 2048, 8
+  46  
+  47  ORG 0A048h
+  48  DB 1, 0
+  49  
+  50  ORG 0A050h
+  51  DB 8192, 8191
+  52  
+  53  ORG 0A058h
+  54  DB 255, 255
+  55  
+  56  
+  57  ORG 0A060h
+  58  DB 16, 16
+  59  
+  60  
+  61  ORG 0A068h
+  62  DB 3, 16383
+  63  
+  64  
+  65  ORG 0A070h
+  66  DB 0, 32767
+  67  
+  68  
+  69  ;2048*480 = 983040, all 0 in lower part
+  70  ORG 0A078h
+  71  DB 2048, 480
+  72  
+  73  ;0*0 ends loop
+  74  ORG 0A080h                  ;
+  75  DB 0, 0                     ;
+  76  
+  77  
+  78  ORG 0000h					; reset address for programm code
+  79  
+  80  
+  81  
+  82  
+  83   :multiply:
+  84  LOADI R1, startAddress      ; R1 = Adress that stores address of first number
+  85  LOAD R1, R1                 ; load Address of next number
+  86  LOAD R0, R1                 ; load number1
+  87  LOADI R6, 0
+  88  INC R1
+  89  LOAD R1, R1                 ; load number2
+  90  LOADI R2, 0             ; resultlower = 0
+  91  LOADI R3, 0             ; resulthigher = 0
+  92  LOADI R7, 0             ; constant 0 for adding carry of result1 to result2
+  93  MOVE R4, R0             ; R4=R2
+  94  OR R4, R1               ; R2 OR R3
+  95  COMP R4, R7
+  96  LOADI R4, end           ; end program if 0*0 is detected
+  97  JUMPZ R4
+  98  LOADI R4, endloop
+  99  :shiftloop:
+ 100  LOADI R5, addPart
+ 101  SHR R1                  ; number2 >> 1
+ 102  JUMPC R5                ; if number2[0] == 1 then result1 = result1 + number1
+ 103  JUMPZ R4
+ 104  SHL R0                  ; number1 << 1
+ 105  SHLC R6
+ 106  LOADI R5, shiftloop
+ 107  JUMP R5
+ 108  :addPart:
+ 109  ADD R2, R0              ; result1 = result1 + number1
+ 110  ADDC R6, R7
+ 111  ADD R3, R6
+ 112  SHL R0                  ; number1 << 1
+ 113  SHLC R6
+ 114  LOADI R5, shiftloop
+ 115  JUMP R5
+ 116  :endloop:
+ 117  LOADI R1, startAddress				; load start address of data section of RAM  into R1
+ 118  LOAD R0, R1
+ 119  INC R0
+ 120  INC R0                              ; R1 = address of result1
+ 121  STORE R3, R0                        ; store resulthigher
+ 122  INC R0
+ 123  STORE R2, R0                        ; store resultlower
+ 124  LOADI R2, 5                         ; increase address by 8 in total (5 + 3 INC)
+ 125  ADD R0, R2
+ 126  STORE R0, R1                        ; store next address in 08000h
+ 127  LOADI R0, multiply
+ 128  JUMP R0                             ;repeat loop
+ 129  :end:
+ 130  LOADI R3, numbersAddr				; dump memory snapshot in hex file
+ 131  LOADI R4, 0FFFFh
+ 132  STORE R3, R4
+ 133  SLEEP						; end simulation with sleep command
+ 134  
 
 
       Assembling complete : found 000 Errors
@@ -96,10 +140,10 @@
       Labels              Address
       ---------------------------
       MULTIPLY            0000h
-      ADDPART             001Eh
-      SHIFTLOOP           0018h
-      END                 0031h
-      ENDLOOP             0022h
+      END                 0037h
+      ENDLOOP             0028h
+      SHIFTLOOP           0016h
+      ADDPART             0020h
 
       Constants           Value  
       ---------------------------
@@ -113,45 +157,49 @@
 0000hex  LOADI   R1, 8000hex            000010_00001_00000  1000000000000000
 0002hex  LOAD    R1, R1                 000011_00001_00001
 0003hex  LOAD    R0, R1                 000011_00000_00001
-0004hex  INC     R1                     011010_00001_00000
-0005hex  LOAD    R1, R1                 000011_00001_00001
-0006hex  LOADI   R5, 001Ehex            000010_00101_00000  0000000000011110
-0008hex  LOADI   R6, 0018hex            000010_00110_00000  0000000000011000
-000Ahex  LOADI   R2, 0000hex            000010_00010_00000  0000000000000000
-000Chex  LOADI   R3, 0000hex            000010_00011_00000  0000000000000000
-000Ehex  LOADI   R7, 0000hex            000010_00111_00000  0000000000000000
-0010hex  MOVE    R4, R0                 001100_00100_00000
-0011hex  OR      R4, R1                 010001_00100_00001
-0012hex  COMP    R4, R7                 011000_00100_00111
-0013hex  LOADI   R4, 0031hex            000010_00100_00000  0000000000110001
-0015hex  JUMPZ   R4                     001011_00100_00000
-0016hex  LOADI   R4, 0022hex            000010_00100_00000  0000000000100010
+0004hex  LOADI   R6, 0000hex            000010_00110_00000  0000000000000000
+0006hex  INC     R1                     011010_00001_00000
+0007hex  LOAD    R1, R1                 000011_00001_00001
+0008hex  LOADI   R2, 0000hex            000010_00010_00000  0000000000000000
+000Ahex  LOADI   R3, 0000hex            000010_00011_00000  0000000000000000
+000Chex  LOADI   R7, 0000hex            000010_00111_00000  0000000000000000
+000Ehex  MOVE    R4, R0                 001100_00100_00000
+000Fhex  OR      R4, R1                 010001_00100_00001
+0010hex  COMP    R4, R7                 011000_00100_00111
+0011hex  LOADI   R4, 0037hex            000010_00100_00000  0000000000110111
+0013hex  JUMPZ   R4                     001011_00100_00000
+0014hex  LOADI   R4, 0028hex            000010_00100_00000  0000000000101000
+0016hex  LOADI   R5, 0020hex            000010_00101_00000  0000000000100000
 0018hex  SHR     R1                     011101_00001_00000
 0019hex  JUMPC   R5                     001010_00101_00000
 001Ahex  JUMPZ   R4                     001011_00100_00000
 001Bhex  SHL     R0                     011100_00000_00000
-001Chex  ADDC    R3, R7                 010101_00011_00111
-001Dhex  JUMP    R6                     001000_00110_00000
-001Ehex  ADD     R2, R0                 010100_00010_00000
-001Fhex  ADDC    R3, R7                 010101_00011_00111
-0020hex  SHL     R0                     011100_00000_00000
-0021hex  JUMP    R6                     001000_00110_00000
-0022hex  LOADI   R1, 8000hex            000010_00001_00000  1000000000000000
-0024hex  LOAD    R0, R1                 000011_00000_00001
-0025hex  INC     R0                     011010_00000_00000
-0026hex  INC     R0                     011010_00000_00000
-0027hex  STORE   R3, R0                 000100_00011_00000
-0028hex  INC     R0                     011010_00000_00000
-0029hex  STORE   R2, R0                 000100_00010_00000
-002Ahex  LOADI   R2, 0005hex            000010_00010_00000  0000000000000101
-002Chex  ADD     R0, R2                 010100_00000_00010
-002Dhex  STORE   R0, R1                 000100_00000_00001
-002Ehex  LOADI   R0, 0000hex            000010_00000_00000  0000000000000000
-0030hex  JUMP    R0                     001000_00000_00000
-0031hex  LOADI   R3, A000hex            000010_00011_00000  1010000000000000
-0033hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
-0035hex  STORE   R3, R4                 000100_00011_00100
-0036hex  SLEEP                          000001_00000_00000
+001Chex  SHLC    R6                     011110_00110_00000
+001Dhex  LOADI   R5, 0016hex            000010_00101_00000  0000000000010110
+001Fhex  JUMP    R5                     001000_00101_00000
+0020hex  ADD     R2, R0                 010100_00010_00000
+0021hex  ADDC    R6, R7                 010101_00110_00111
+0022hex  ADD     R3, R6                 010100_00011_00110
+0023hex  SHL     R0                     011100_00000_00000
+0024hex  SHLC    R6                     011110_00110_00000
+0025hex  LOADI   R5, 0016hex            000010_00101_00000  0000000000010110
+0027hex  JUMP    R5                     001000_00101_00000
+0028hex  LOADI   R1, 8000hex            000010_00001_00000  1000000000000000
+002Ahex  LOAD    R0, R1                 000011_00000_00001
+002Bhex  INC     R0                     011010_00000_00000
+002Chex  INC     R0                     011010_00000_00000
+002Dhex  STORE   R3, R0                 000100_00011_00000
+002Ehex  INC     R0                     011010_00000_00000
+002Fhex  STORE   R2, R0                 000100_00010_00000
+0030hex  LOADI   R2, 0005hex            000010_00010_00000  0000000000000101
+0032hex  ADD     R0, R2                 010100_00000_00010
+0033hex  STORE   R0, R1                 000100_00000_00001
+0034hex  LOADI   R0, 0000hex            000010_00000_00000  0000000000000000
+0036hex  JUMP    R0                     001000_00000_00000
+0037hex  LOADI   R3, A000hex            000010_00011_00000  1010000000000000
+0039hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
+003Bhex  STORE   R3, R4                 000100_00011_00100
+003Chex  SLEEP                          000001_00000_00000
 
 
       Contents of Memory: Working RAM
@@ -175,5 +223,38 @@ A019hex  0000000000110011
 A020hex  0000000100000000
 A021hex  0000000100000000
 
-A028hex  0000000000000000
-A029hex  0000000000000000
+A028hex  1111111111111111
+A029hex  1111111111111111
+
+A030hex  0000000000001100
+A031hex  0000000000001100
+
+A038hex  0011111111111111
+A039hex  0000000000000010
+
+A040hex  0000100000000000
+A041hex  0000000000001000
+
+A048hex  0000000000000001
+A049hex  0000000000000000
+
+A050hex  0010000000000000
+A051hex  0001111111111111
+
+A058hex  0000000011111111
+A059hex  0000000011111111
+
+A060hex  0000000000010000
+A061hex  0000000000010000
+
+A068hex  0000000000000011
+A069hex  0011111111111111
+
+A070hex  0000000000000000
+A071hex  0111111111111111
+
+A078hex  0000100000000000
+A079hex  0000000111100000
+
+A080hex  0000000000000000
+A081hex  0000000000000000
