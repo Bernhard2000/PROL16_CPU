@@ -84,7 +84,7 @@ ORG 0000h					; reset address for programm code
 LOADI R1, startAddress      ; R1 = Adress that stores address of first number
 LOAD R1, R1                 ; load Address of next number
 LOAD R0, R1                 ; load number1
-LOADI R6, 1
+LOADI R6, 0
 INC R1
 LOAD R1, R1                 ; load number2
 LOADI R2, 0             ; resultlower = 0
@@ -107,7 +107,7 @@ LOADI R5, shiftloop
 JUMP R5
 :addPart:
 ADD R2, R0              ; result1 = result1 + number1
-ADDC R6, R7
+ADDC R3, R7
 ADD R3, R6
 SHL R0                  ; number1 << 1
 SHLC R6

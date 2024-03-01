@@ -107,7 +107,7 @@
  107  JUMP R5
  108  :addPart:
  109  ADD R2, R0              ; result1 = result1 + number1
- 110  ADDC R6, R7
+ 110  ADDC R3, R7
  111  ADD R3, R6
  112  SHL R0                  ; number1 << 1
  113  SHLC R6
@@ -178,7 +178,7 @@
 001Dhex  LOADI   R5, 0016hex            000010_00101_00000  0000000000010110
 001Fhex  JUMP    R5                     001000_00101_00000
 0020hex  ADD     R2, R0                 010100_00010_00000
-0021hex  ADDC    R6, R7                 010101_00110_00111
+0021hex  ADDC    R3, R7                 010101_00011_00111
 0022hex  ADD     R3, R6                 010100_00011_00110
 0023hex  SHL     R0                     011100_00000_00000
 0024hex  SHLC    R6                     011110_00110_00000
