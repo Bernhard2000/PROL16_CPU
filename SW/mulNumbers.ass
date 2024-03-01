@@ -3,66 +3,46 @@
 
 ; ### Data ###
 ORG 08000h					; define address to store initial data in it
-ORG 0000h					; reset address for programm code
 
 ; ### Constants ###
 EQU startAddress, 08000h
+EQU numbersAddr, 0A000h
+DB 0A000h
 
 ;1*1
 ORG 0A000h                  ;
-DB 5, 5                     ;
-EQU number1_1, 0A000h
-EQU number1_2, 0A001h
-EQU result1_1, 0A002h
-EQU result1_2, 0A003h
+DB 1,1                      ;
+
 
 ;2*5 == 10
-ORG 0A000h                  ;
+ORG 0A008h                  ;
 DB 2, 5                     ;
-EQU number1_1, 0A000h
-EQU number1_2, 0A001h
-EQU result1_1, 0A002h
-EQU result1_2, 0A003h
+
+;10*10 == 100
+ORG 0A010h                  ;
+DB 10, 10                     ;
+
+;1285*51 == 65535
+ORG 0A018h                  ;
+DB 1285, 51                   ;
+
+;256*256 == 65536, first number to overflow to higher part
+ORG 0A020h                  ;
+DB 256, 256                   ;
 
 
+;65535*65535, highest possible number
+ORG 0A028h                  ;
+DB 65535, 65535
+
+;0*0 ends loop
+ORG 0A030h                  ;
+DB 0, 0                     ;
 
 
+ORG 0000h					; reset address for programm code
 
-; ### Code ###
-LOADI R6, startAddress				; load start address of data section of RAM  into R6
 
-:start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
-LOADI R3, loop_start             ;
-LOADI R2, end               ;
-LOADI R5, passed           ;
-LOADI R7, start             ;
-LOAD R0, R6					; load first number into R0
-INC R6                      ;
-LOAD R1, R6                 ; load second number into R1
-NOP                         ;
-MOVE R4, R0                 ;
-AND R4, R1                  ; should result in 1
-MOVE R4, R0                 ; move 5 back into R4
-OR R0, R1                   ; 29
-XOR R0, R1                  ; 4
-NOT R0                      ; 65531
-ADD R0, R4                  ; 0
-JUMPZ R5                    ;
-JUMP R7                     ; infinite loop if result doesnt match
-:passed:                    ;
-LOAD R0, R6					; load first number back into R0
-INC R6                      ;
-LOAD R1, R6                 ;
-:loop_start:                ;
-DEC R0                      ;
-JUMPZ R2                    ;
-JUMP R3                     ;
-:end:                       ;
-STORE R0, R6					; store result in RAM (Adress: 08002h)
-LOADI R3, startAddress				; dump memory snapshot in hex file
-LOADI R4, 0FFFFh
-STORE R3, R4
-SLEEP						; end simulation with sleep command
 
 
  :multiply:
@@ -72,34 +52,52 @@ LOAD R0, R1                 ; load number1
 INC R1
 LOAD R1, R1                 ; load number2
 LOADI R5, addPart
-LOADI R6, shiftloop
-LOADI R4, endMultiply
-LOADI R2, 0             ; result1 = 0
-LOADI R3, 0             ; result2 = 0
+LOADI R2, 0             ; resultlower = 0
+LOADI R3, 0             ; resulthigher = 0
 LOADI R7, 0             ; constant 0 for adding carry of result1 to result2
+MOVE R4, R0             ; R4=R2
+OR R4, R1               ; R2 OR R3
+COMP R4, R7
+LOADI R4, end           ; end program if 0*0 is detected
+JUMPZ R4
+LOADI R4, endloop
 :shiftloop:
 SHR R1                  ; number2 >> 1
 JUMPC R5                ; if number2[0] == 1 then result1 = result1 + number1
 JUMPZ R4
 SHL R0                  ; number1 << 1
+SHLC R3
+ADDC R3, R7             ; result2 = result2 + carry
+LOADI R6, shiftloop
 JUMP R6
 :addPart:
 ADD R2, R0              ; result1 = result1 + number1
 ADDC R3, R7             ; result2 = result2 + carry
+SHLC R3
 SHL R0                  ; number1 << 1
+LOADI R6, shiftloop
 JUMP R6
-:endMultiply:
+:endloop:
 LOADI R1, startAddress				; load start address of data section of RAM  into R6
 LOAD R0, R1
 INC R0
 INC R0                              ; R1 = address of result1
-STORE R2, R0
+STORE R3, R0                        ; store resulthigher
 INC R0
-STORE R3, R0
+STORE R2, R0                        ; store resultlower
 LOADI R2, 5                         ; increase address by 8 in total (5 + 3 INC)
-ADD R1, R2
+ADD R0, R2
 STORE R0, R1                        ; store next address in 08000h
 LOADI R0, multiply
 JUMP R0                             ;repeat loop
+:end:
+LOADI R3, numbersAddr				; dump memory snapshot in hex file
+LOADI R4, 0FFFFh
+STORE R3, R4
+SLEEP						; end simulation with sleep command
+
+
+
+:upperResult:
 
 
