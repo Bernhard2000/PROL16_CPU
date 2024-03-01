@@ -9,9 +9,17 @@ ORG 0000h					; reset address for programm code
 ; ### Constants ###
 EQU startAddress, 08000h
 
-;5*5
+;1*1
 ORG 0A000h                  ;
 DB 5, 5                     ;
+EQU number1_1, 0A000h
+EQU number1_2, 0A001h
+EQU result1_1, 0A002h
+EQU result1_2, 0A003h
+
+;2*5 == 10
+ORG 0A000h                  ;
+DB 2, 5                     ;
 EQU number1_1, 0A000h
 EQU number1_2, 0A001h
 EQU result1_1, 0A002h
