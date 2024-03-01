@@ -1,0 +1,131 @@
+   1  ; ### Assemblerprogram to add two 16 bit unsigned numbers ###
+   2  
+   3  
+   4  ; ### Data ###
+   5  ORG 08000h					; define address to store initial data in it
+   6  DB 5, 25						; loop x times
+   7  ORG 0000h					; reset address for programm code
+   8  
+   9  ; ### Constants ###
+  10  EQU startAddress, 08000h
+  11  
+  12  ; ### Code ###
+  13  LOADI R6, startAddress				; load start address of data section of RAM  into R6
+  14  
+  15  :start:						; this is a Jump-label --> with >>>LOADI R3, start;   JUMP R3<<< you can jump back to this position
+  16  LOADI R3, loop_start             ;
+  17  LOADI R2, end               ;
+  18  LOADI R5, passed           ;
+  19  LOADI R7, start             ;
+  20  LOAD R0, R6					; load first number into R0
+  21  INC R6                      ;
+  22  LOAD R1, R6                 ; load second number into R1
+  23  NOP                         ;
+  24  MOVE R4, R0                 ;
+  25  AND R4, R1                  ; should result in 1
+  26  MOVE R4, R0                 ; move 5 back into R4
+  27  OR R0, R1                   ; 29
+  28  XOR R0, R1                  ; 4
+  29  NOT R0                      ; 65531
+  30  ADD R0, R4                  ; 0
+  31  INC R0                      ;
+  32  SHL R0                      ; 2
+  33  SHL R0                      ; 4
+  34  SUB R0, R4                      ; -1
+  35  INC R0                      ;0
+  36  INC R0                      ;1
+  37  SHL R0                     ;2
+  38  SHLC R0                     ;4
+  39  SHLC R0                     ;8
+  40  SHLC R0                     ;16
+  41  SHLC R0                     ;32
+  42  SHLC R0                     ;64
+  43  SUB R0, R1                  ; 64-25=39, CARRY
+  44  SUB R0, R1                  ; 39-25=14, CARRY
+  45  ADDC R0, R1                  ; 14 + 25 + 1 = 40
+  46  LOADI R1, 5                ;
+  47  SHR R0                       ;20
+  48  SHR R0                       ;10
+  49  SUB R0, R1                   ; 10 - 5 = 5, CARRY
+  50  SHRC R0                     ; 32770
+  51  LOADI R4, 32770
+  52  COMP R0, R4
+  53  JUMPZ R5                    ;
+  54  JUMP R7                     ; infinite loop if result doesnt match
+  55  :passed:                    ;
+  56  STORE R0, R6					; store result in RAM (Adress: 08002h)
+  57  LOADI R3, startAddress				; dump memory snapshot in hex file
+  58  LOADI R4, 0FFFFh
+  59  STORE R3, R4
+  60  SLEEP						; end simulation with sleep command
+
+
+      Assembling complete : found 002 Errors
+                            found 000 Warnings
+
+      Labels              Address
+      ---------------------------
+      START               0002h
+      PASSED              002Fh
+
+      Constants           Value  
+      ---------------------------
+      STARTADDRESS        0000h
+
+
+      Contents of Memory: Program-Code ROM
+      ------------------------------------
+
+0000hex  LOADI   R6, 8000hex            000010_00110_00000  1000000000000000
+0002hex  LOADI   R3, 0000hex            000010_00011_00000  0000000000000000
+0004hex  LOADI   R2, 0000hex            000010_00010_00000  0000000000000000
+0006hex  LOADI   R5, 002Fhex            000010_00101_00000  0000000000101111
+0008hex  LOADI   R7, 0002hex            000010_00111_00000  0000000000000010
+000Ahex  LOAD    R0, R6                 000011_00000_00110
+000Bhex  INC     R6                     011010_00110_00000
+000Chex  LOAD    R1, R6                 000011_00001_00110
+000Dhex  NOP                            000000_00000_00000
+000Ehex  MOVE    R4, R0                 001100_00100_00000
+000Fhex  AND     R4, R1                 010000_00100_00001
+0010hex  MOVE    R4, R0                 001100_00100_00000
+0011hex  OR      R0, R1                 010001_00000_00001
+0012hex  XOR     R0, R1                 010010_00000_00001
+0013hex  NOT     R0                     010011_00000_00000
+0014hex  ADD     R0, R4                 010100_00000_00100
+0015hex  INC     R0                     011010_00000_00000
+0016hex  SHL     R0                     011100_00000_00000
+0017hex  SHL     R0                     011100_00000_00000
+0018hex  SUB     R0, R4                 010110_00000_00100
+0019hex  INC     R0                     011010_00000_00000
+001Ahex  INC     R0                     011010_00000_00000
+001Bhex  SHL     R0                     011100_00000_00000
+001Chex  SHLC    R0                     011110_00000_00000
+001Dhex  SHLC    R0                     011110_00000_00000
+001Ehex  SHLC    R0                     011110_00000_00000
+001Fhex  SHLC    R0                     011110_00000_00000
+0020hex  SHLC    R0                     011110_00000_00000
+0021hex  SUB     R0, R1                 010110_00000_00001
+0022hex  SUB     R0, R1                 010110_00000_00001
+0023hex  ADDC    R0, R1                 010101_00000_00001
+0024hex  LOADI   R1, 0005hex            000010_00001_00000  0000000000000101
+0026hex  SHR     R0                     011101_00000_00000
+0027hex  SHR     R0                     011101_00000_00000
+0028hex  SUB     R0, R1                 010110_00000_00001
+0029hex  SHRC    R0                     011111_00000_00000
+002Ahex  LOADI   R4, 8002hex            000010_00100_00000  1000000000000010
+002Chex  COMP    R0, R4                 011000_00000_00100
+002Dhex  JUMPZ   R5                     001011_00101_00000
+002Ehex  JUMP    R7                     001000_00111_00000
+002Fhex  STORE   R0, R6                 000100_00000_00110
+0030hex  LOADI   R3, 8000hex            000010_00011_00000  1000000000000000
+0032hex  LOADI   R4, FFFFhex            000010_00100_00000  1111111111111111
+0034hex  STORE   R3, R4                 000100_00011_00100
+0035hex  SLEEP                          000001_00000_00000
+
+
+      Contents of Memory: Working RAM
+      ---------------------------------
+
+
+8000hex  0000000000000101
+8001hex  0000000000011001

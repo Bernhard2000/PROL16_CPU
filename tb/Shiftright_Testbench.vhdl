@@ -17,8 +17,8 @@ architecture Behaviour of Shiftright_testbench is
             DataOut : out DataVec;
             CarryOut: out std_logic);
     end component;
-    signal dataInSignal: std_ulogic_vector(Data_Width-1 downto 0);
-    signal dataOutSignal : std_ulogic_vector(Data_Width-1 downto 0);
+    signal dataInSignal: DataVec;
+    signal dataOutSignal : DataVec;
     signal carryInSignal : std_ulogic;
     signal carryOutSignal : std_ulogic;
 begin
