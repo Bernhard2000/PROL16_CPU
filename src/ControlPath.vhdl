@@ -69,9 +69,9 @@ architecture Behavioral of ControlPath is
       function clock_cycle(lastCycle : std_ulogic_vector; instrTerminate : std_ulogic) return std_ulogic_vector is
         variable cyc : std_ulogic_vector(2 downto 0);
         begin
-           if instrTerminate = '1' then
-                                                            cyc := Cycle_1;
-                                                            else
+            if instrTerminate = '1' then
+                cyc := Cycle_1;
+            else
                                 cyc := lastCycle(1 downto 0) & lastCycle(2);                                
                                 end if;                   
               return cyc;
