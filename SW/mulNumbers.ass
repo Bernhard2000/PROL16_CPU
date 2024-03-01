@@ -3,7 +3,6 @@
 
 ; ### Data ###
 ORG 08000h					; define address to store initial data in it
-DB 5, 25						;
 ORG 0000h					; reset address for programm code
 
 ; ### Constants ###
@@ -89,4 +88,10 @@ ADDC R3, R7             ; result2 = result2 + carry
 SHL R0                  ; number1 << 1
 JUMP R6
 :endMultiply:
+LOADI R0, startAddress				; load start address of data section of RAM  into R6
+LOAD R1, R0
+LOADI R2, 8
+ADD R1, R2
+STORE R1, R0                        ; store next address in 08000h in RAM
+
 
