@@ -66,19 +66,20 @@ SLEEP						; end simulation with sleep command
 
 
  :multiply:
+LOADI R1, startAddress      ; R1 = Adress that stores address of first number
+LOAD R1, R1                 ; load Address of next number
+LOAD R0, R1                 ; load number1
+INC R1
+LOAD R1, R1                 ; load number2
 LOADI R5, addPart
 LOADI R6, shiftloop
 LOADI R4, endMultiply
-LOADI R0, number1
-LOAD R0, R0             ; R0 = number1
-LOADI R1, number 2
-LOAD R1, R1             ; R1 = number2
 LOADI R2, 0             ; result1 = 0
 LOADI R3, 0             ; result2 = 0
 LOADI R7, 0             ; constant 0 for adding carry of result1 to result2
 :shiftloop:
 SHR R1                  ; number2 >> 1
-JUMPC R3                ; if number2[0] == 1 then result1 = result1 + number1
+JUMPC R5                ; if number2[0] == 1 then result1 = result1 + number1
 JUMPZ R4
 SHL R0                  ; number1 << 1
 JUMP R6
@@ -88,10 +89,17 @@ ADDC R3, R7             ; result2 = result2 + carry
 SHL R0                  ; number1 << 1
 JUMP R6
 :endMultiply:
-LOADI R0, startAddress				; load start address of data section of RAM  into R6
-LOAD R1, R0
-LOADI R2, 8
+LOADI R1, startAddress				; load start address of data section of RAM  into R6
+LOAD R0, R1
+INC R0
+INC R0                              ; R1 = address of result1
+STORE R2, R0
+INC R0
+STORE R3, R0
+LOADI R2, 5                         ; increase address by 8 in total (5 + 3 INC)
 ADD R1, R2
-STORE R1, R0                        ; store next address in 08000h in RAM
+STORE R0, R1                        ; store next address in 08000h
+LOADI R0, multiply
+JUMP R0                             ;repeat loop
 
 
