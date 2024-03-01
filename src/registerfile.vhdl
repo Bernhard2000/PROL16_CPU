@@ -27,13 +27,13 @@ begin
    writeRegFile : process (Clk, Reset) is
    begin
         if Reset = ResetActive then
-            Registers <= (others => (others => '0')); 
+            registers <= (others => (others => '0')); 
         elsif rising_Edge(Clk) then           
             --Have to use this abomination to implement writing to the RegFile for the Elaborated Design to make sense.
-            for i in Registers'range loop
+            for i in registers'range loop
                     if i = unsigned(RegSelRa) then
                         if ClkEnRegFile = '1' then
-                            Registers(i) <= RegFileIn;  -- Write
+                            registers(i) <= RegFileIn;  -- Write
                             report "RegFile write: " &integer'image(to_integer(unsigned(RegFileIn))) & "to register: " &integer'image(to_integer(unsigned(RegSelRa)));
                     end if;
                 end if;
@@ -46,6 +46,6 @@ begin
         end if;
          
    end process;  
-   RaValue <= Registers(to_integer(unsigned(RegSelRa)));
-   RbValue <= Registers(to_integer(unsigned(RegSelRb)));            
+   RaValue <= registers(to_integer(unsigned(RegSelRa)));
+   RbValue <= registers(to_integer(unsigned(RegSelRb)));            
 end Behavioural;
