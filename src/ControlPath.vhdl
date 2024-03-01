@@ -52,8 +52,7 @@ architecture Behavioral of ControlPath is
     signal SelLoad_sig, SelAddr_sig, ALU_CarryIn_sig : std_ulogic := '0';
     signal ClkEnOpcode_sig : std_ulogic := '1';
     signal instrTerminate : std_ulogic := '0';
-    signal carryOut_sig, zeroOut_sig : std_ulogic := '0';      
-    
+    signal carryOut_sig, lastCarryOut_sig, zeroOut_sig : std_ulogic := '0';      
     function ulogic_vector_to_OpcodeValueType(data_vector : std_ulogic_vector) return OpcodeValueType is
         variable result : OpcodeValueType;
       begin
@@ -141,7 +140,17 @@ begin
     end process;
 
  
-    
+    setLastCarryFlag: process(ZuluCLK, carryOut_sig, cycle) is
+    begin
+    if rising_edge(ZuluCLK) then
+        case cycle is
+            when Cycle_2 =>
+                lastCarryOut_sig <= carryOut_sig;
+            when others => 
+                lastCarryOut_sig <= lastCarryOut_sig;
+        end case;
+    end if;
+    end process;
     
     setFlags: process(ZuluCLK, carryOut_sig, zeroOut_sig, cycle, ALU_ZeroOut, ALU_CarryOut) is
     begin
@@ -167,7 +176,7 @@ begin
     
    
 
-    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig) is
+    readOpCode: process(cycle, RegOpCode, zeroOut_sig, carryOut_sig, lastCarryOut_sig) is
         variable stop : std_ulogic := '0';
         variable cyc : std_ulogic_vector(2 downto 0) := "001";
         variable clkEnPC_var : std_ulogic := '0';
@@ -178,17 +187,17 @@ begin
         variable clkEnRegFile_var : std_ulogic := '0';
         variable alu_CarryIn_var : std_ulogic := '0';
         variable legalOpCode : std_ulogic := '1';
-    begin                
+    begin
         case cycle is
             when Cycle_1 => --increment PC
                 report "Cycle 1";
                 stop := '0';
                 selAddr_var := '0';
-                                                        alu_CarryIn_var := '0';
-                                                        clkEnRegFile_var := '0';
-                                                                        legalOpCode := '1';
-                                                                                                 clkEnPC_var := '1';
-                         selLoad_var := 'X';
+                alu_CarryIn_var := '0';
+                clkEnRegFile_var := '0';
+                legalOpCode := '1';
+                clkEnPC_var := '1';
+                selLoad_var := 'X';
 
 
                 case RegOpCode is
@@ -363,7 +372,7 @@ begin
                             aluFunc_var := ALU_AplusBplusCarry;
                             selPC_var := '0';
                             selLoad_var := '0';
-                            alu_CarryIn_var := carryOut_sig;
+                            alu_CarryIn_var := lastCarryOut_sig;
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                             selAddr_var := '0';
@@ -381,7 +390,7 @@ begin
                             aluFunc_var := ALU_AminusBminusCarry;
                             selPC_var := '0';
                             clkEnPC_var := '0';
-                            alu_CarryIn_var := carryOut_sig;
+                            alu_CarryIn_var := lastCarryOut_sig;
                             selLoad_var := '0';
                             clkEnRegFile_var := '1';
                             selAddr_var := '0';
@@ -438,7 +447,7 @@ begin
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                             selAddr_var := '0';
-                            alu_CarryIn_var := carryOut_sig;
+                            alu_CarryIn_var := lastCarryOut_sig;
                         when OP_SHLC => 
                             report "SHLC";
                             aluFunc_var := ALU_ShiftALeft;
@@ -447,7 +456,7 @@ begin
                             clkEnRegFile_var := '1';
                             clkEnPC_var := '0';
                             selAddr_var := '0';
-                            alu_CarryIn_var := carryOut_sig;
+                            alu_CarryIn_var := lastCarryOut_sig;
                         when others =>
                             aluFunc_var := "XXXX";
                             selPC_var := 'X';
