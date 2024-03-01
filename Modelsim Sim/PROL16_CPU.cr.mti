@@ -18,16 +18,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity CPU
 -- Compiling architecture Behavioral of CPU
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/registerfile_tb.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/registerfile_tb.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package prol16_package
--- Compiling entity Registerfile_Testbench
--- Compiling architecture Behavioral of Registerfile_Testbench
-
 } {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl {2 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/CPU_TB.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
@@ -50,16 +40,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling architecture MemoryTB_behav of MemoryTB
 ** Warning: /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/MemoryTB.vhd(30): (vcom-1207) An abstract literal and an identifier must have a separator between them.
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ALU_Testbench.vhd
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package prol16_package
--- Compiling entity ALU_Testbench
--- Compiling architecture Behavioral of ALU_Testbench
-
 } {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftright.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
@@ -70,7 +50,7 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity Shiftright
 -- Compiling architecture Behavioral of Shiftright
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/registerfile.vhdl
+} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Registerfile.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Registerfile.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -80,16 +60,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity RegisterFile
 -- Compiling architecture Behavioural of RegisterFile
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ControlPath.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package prol16_package
--- Compiling entity ControlPath
--- Compiling architecture Behavioral of ControlPath
-
 } {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/prol16_package.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/prol16_package.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
@@ -97,15 +67,25 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Loading package std_logic_1164
 -- Compiling package prol16_package
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl {2 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl
+} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
+-- Loading package std_logic_arith
 -- Loading package prol16_package
--- Compiling entity ControlPath_tb
--- Compiling architecture behavior of ControlPath_tb
-** Warning: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/ControlPath_tb.vhdl(32): (vcom-1207) An abstract literal and an identifier must have a separator between them.
+-- Compiling entity Shiftleft
+-- Compiling architecture Behavioral of Shiftleft
+
+} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package prol16_package
+-- Compiling entity Shiftright_testbench
+-- Compiling architecture Behaviour of Shiftright_testbench
 
 } {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/AddDataVec.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
@@ -116,43 +96,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Loading package prol16_package
 -- Compiling entity AddDataVec
 -- Compiling architecture adder of AddDataVec
-
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl {0 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package prol16_package
--- Compiling entity Shiftright_testbench
--- Compiling architecture Behaviour of Shiftright_testbench
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(20): (vcom-1136) Unknown identifier "Data_Width".
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(20): (vcom-1591) Bad expression in left bound of range expression.
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(20): Type error in range expression.
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(21): (vcom-1136) Unknown identifier "Data_Width".
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(21): (vcom-1591) Bad expression in left bound of range expression.
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(21): Type error in range expression.
-** Note: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftright_Testbench.vhdl(52): VHDL Compiler exiting
-
-} {10.0 16.0} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Shiftleft.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package std_logic_arith
--- Loading package prol16_package
--- Compiling entity Shiftleft
--- Compiling architecture Behavioral of Shiftleft
-
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl {1 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/ALU.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package prol16_package
--- Compiling entity ALU
--- Compiling architecture Behavioral of ALU
 
 } {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd {2 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/src/Memory/memory.vhd
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
@@ -173,18 +116,7 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity memory
 -- Compiling architecture beh of memory
 
-} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl {0 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
-** Error: (vcom-11) Could not find work.cpu_package.
-** Error (suppressible): /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(7): (vcom-1195) Cannot find expanded name "work.cpu_package".
-** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(7): Unknown expanded name.
-** Note: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(9): VHDL Compiler exiting
-
-} {7.0 8.0 9.0 10.0} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl {0 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl
+} {} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl {0 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -195,4 +127,21 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 ** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl(7): Unknown expanded name.
 ** Note: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/AddDataVec_Testbench.vhdl(9): VHDL Compiler exiting
 
-} {7.0 8.0 9.0 10.0} {}}
+} {7.0 8.0 9.0 10.0} {}} /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl {0 {vcom -work work -2002 -explicit -stats=none /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package prol16_package
+-- Compiling entity Shiftleft_testbench
+-- Compiling architecture Behaviour of Shiftleft_testbench
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(20): (vcom-1136) Unknown identifier "Data_Width".
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(20): (vcom-1591) Bad expression in left bound of range expression.
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(20): Type error in range expression.
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(21): (vcom-1136) Unknown identifier "Data_Width".
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(21): (vcom-1591) Bad expression in left bound of range expression.
+** Error: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(21): Type error in range expression.
+** Note: /home/bernhard/Dokumente/VLSI/PROL16_CPU/tb/Shiftleft_Testbench.vhdl(52): VHDL Compiler exiting
+
+} {10.0 16.0} {}}
